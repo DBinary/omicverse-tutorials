@@ -38,3 +38,5 @@ site/
 *.swp
 *.swo
 *site*/
+docs/Tutorials-space/data/
+docs/Tutorials-single/data/
