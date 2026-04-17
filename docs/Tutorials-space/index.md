@@ -7,6 +7,7 @@ This page mirrors the `Space` section in `mkdocs.yml` and provides a markdown en
 - [Crop and Rotation of spatial transcriptomic data](t_crop_rotate.ipynb)
 - [Visium 10x HD Cellpose](t_cellpose.ipynb)
 - [Analyze Nanostring data](t_nanostring_preprocess.ipynb)
+- [Analyze Xenium data](t_xenium_preprocess.ipynb)
 - [Analyze Visium HD data](t_visium_hd_preprocess.ipynb)
 - [Spatial clustering and denoising expressions](t_cluster_space.ipynb)
 - [Spatial integration and clustering](t_staligner.ipynb)
