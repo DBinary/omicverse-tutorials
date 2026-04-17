@@ -29,6 +29,7 @@ This page is the markdown overview for the tutorial structure defined in `mkdocs
 - Preprocessing
   - [Preprocessing the data of scRNA-seq [CPU]](Tutorials-single/t_preprocess_cpu.ipynb)
   - [Preprocessing the data of scRNA-seq [GPU]](Tutorials-single/t_preprocess_gpu.ipynb)
+  - [Preprocessing the data of scRNA-seq [Rust / out-of-memory]](Tutorials-single/t_preprocess_rust.ipynb)
   - [Clustering space](Tutorials-single/t_cluster.ipynb)
   - [Data integration and batch correction](Tutorials-single/t_single_batch.ipynb)
   - [Consensus Non-negative Matrix factorization (cNMF)](Tutorials-single/t_cnmf.ipynb)
