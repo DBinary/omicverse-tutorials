@@ -8,7 +8,7 @@ import omicverse as ov
 
 本页根据 OmicVerse registry 中的 `@register_function` 自动生成。
 
-当前列出的公开 registry API 数量：293
+当前列出的公开 registry API 数量：300
 
 ```{eval-rst}
 .. currentmodule:: omicverse
@@ -52,8 +52,10 @@ import omicverse as ov
    io.read_visium_hd
    io.read_visium_hd_bin
    io.read_visium_hd_seg
+   io.read_xenium
    io.save
    io.spatial.read_visium
+   io.write_visium_hd_cellseg
 ```
 
 ## 比对
@@ -133,6 +135,7 @@ import omicverse as ov
    single.DEG
    single.download_cl
    single.Drug_Response
+   single.dynamic_features
    single.factor_correlation
    single.factor_exact
    single.Fate
@@ -148,6 +151,7 @@ import omicverse as ov
    single.GLUE_pair
    single.gptcelltype
    single.gptcelltype_local
+   single.hematopoiesis
    single.lazy
    single.load_human_prior_interaction_network
    single.MetaCell
@@ -164,6 +168,7 @@ import omicverse as ov
    single.pySCSA
    single.pySIMBA
    single.pyTOSICA
+   single.pyVIA
    single.run_cellphonedb_v5
    single.scanpy_cellanno_from_dict
    single.SCENIC
@@ -255,9 +260,6 @@ import omicverse as ov
    :toctree: reference/
    :nosignatures:
 
-   pl._plot_backend.plot_ConvexHull
-   pl._plot_backend.pyomic_palette
-   pl._plot_backend.stacking_vol
    pl.add_density_contour
    pl.add_palue
    pl.add_pie2spatial
@@ -274,8 +276,10 @@ import omicverse as ov
    pl.complexheatmap
    pl.contour
    pl.ConvexHull
+   pl.create_custom_colormap
    pl.dotplot
    pl.dynamic_heatmap
+   pl.dynamic_trends
    pl.embedding
    pl.embedding_adjust
    pl.embedding_atlas
@@ -290,6 +294,7 @@ import omicverse as ov
    pl.markers_dotplot
    pl.palette
    pl.plot_cellproportion
+   pl.plot_ConvexHull
    pl.plot_embedding_celltype
    pl.plot_flowsig_network
    pl.plot_grouped_fractions
@@ -297,8 +302,10 @@ import omicverse as ov
    pl.plot_set
    pl.plot_spatial
    pl.plot_text_set
+   pl.pyomic_palette
    pl.rank_genes_groups_dotplot
    pl.single_group_boxplot
+   pl.stacking_vol
    pl.tsne
    pl.umap
    pl.venn
