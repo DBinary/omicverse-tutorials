@@ -8,7 +8,7 @@ import omicverse as ov
 
 This page is auto-generated from `@register_function` entries in the OmicVerse registry.
 
-Public registry entries listed here: 300
+Public registry entries listed here: 301
 
 ```{eval-rst}
 .. currentmodule:: omicverse
@@ -156,6 +156,7 @@ Public registry entries listed here: 300
    single.load_human_prior_interaction_network
    single.MetaCell
    single.MetaTiME
+   single.Monocle
    single.mouse_hsc_nestorowa16
    single.pathway_aucell
    single.pathway_aucell_enrichment

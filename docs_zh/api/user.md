@@ -8,7 +8,7 @@ import omicverse as ov
 
 本页根据 OmicVerse registry 中的 `@register_function` 自动生成。
 
-当前列出的公开 registry API 数量：300
+当前列出的公开 registry API 数量：301
 
 ```{eval-rst}
 .. currentmodule:: omicverse
@@ -156,6 +156,7 @@ import omicverse as ov
    single.load_human_prior_interaction_network
    single.MetaCell
    single.MetaTiME
+   single.Monocle
    single.mouse_hsc_nestorowa16
    single.pathway_aucell
    single.pathway_aucell_enrichment
