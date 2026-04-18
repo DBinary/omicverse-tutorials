@@ -1,6 +1,6 @@
 # Sphinx documentation dependencies for omicverse-tutorials
 sphinx>=7.0,<9
-furo
+sphinx-book-theme>=1.1
 myst-nb>=1.0
 sphinx-autodoc-typehints
 sphinx-copybutton

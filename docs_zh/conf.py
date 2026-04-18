@@ -136,7 +136,8 @@ exclude_patterns = [
     "Thumbs.db",
     ".DS_Store",
     "**.ipynb_checkpoints",
-    "overrides",
+    "overrides.mkdocs.backed",
+    "css.mkdocs.backed",
     "site",
 ]
 needs_sphinx = "4.0"
@@ -164,38 +165,41 @@ intersphinx_mapping = {
     "huggingface_hub": ("https://huggingface.co/docs/huggingface_hub/main/en", None),
 }
 
-# -- HTML / Furo --------------------------------------------------------------
-html_theme = "furo"
+# -- HTML / sphinx_book_theme -------------------------------------------------
+html_theme = "sphinx_book_theme"
 html_title = f"{project} (中文文档)"
 html_logo = "_static/logo.png"
 html_favicon = "_static/favicon.ico"
 
 html_theme_options = {
-    "sidebar_hide_name": True,
-    "light_css_variables": {
-        "color-brand-primary": "#4c7a69",
-        "color-brand-content": "#4c7a69",
+    "repository_url": repository_url,
+    "repository_branch": default_github_ref,
+    "path_to_docs": "docs_zh",
+    "use_repository_button": True,
+    "use_edit_page_button": True,
+    "use_source_button": True,
+    "use_issues_button": True,
+    "use_download_button": True,
+    "home_page_in_toc": True,
+    "show_navbar_depth": 1,
+    "navigation_with_keys": True,
+    "logo": {
+        "image_light": "_static/logo.png",
+        "image_dark": "_static/logo.png",
+        "text": project,
     },
-    "dark_css_variables": {
-        "color-brand-primary": "#78aa95",
-        "color-brand-content": "#78aa95",
-    },
-    "footer_icons": [
-        {
-            "name": "GitHub",
-            "url": repository_url,
-            "html": "",
-            "class": "fab fa-github fa-2x",
-        }
-    ],
 }
 
+# Pygments styles are overridden by custom.css token palette, but set sensible
+# defaults in case the user disables custom.css.
 pygments_style = "tango"
 pygments_dark_style = "monokai"
 
 html_static_path = ["_static"]
 html_css_files = [
     "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css",
+    "css/custom.css",
+    "css/icons.css",
     "css/override.css",
 ]
 html_show_sphinx = False
