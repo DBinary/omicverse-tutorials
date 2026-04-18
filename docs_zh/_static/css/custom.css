@@ -58,25 +58,30 @@ html[data-theme="dark"] {
     --shadow-lg:   0 4px 12px rgba(0,0,0,0.4);
 }
 
-/* ===== Code Blocks ===== */
+/* ===== Code Blocks
+   Selector uses ^="highlight-" (starts with) so it ONLY matches code-input
+   wrappers like `highlight-ipython3`, NOT notebook output wrappers whose
+   class starts with `output` (e.g. `output stream highlight-myst-ansi`).
+   If we matched those, our `overflow: hidden` would clobber the theme's
+   `.cell_output .output { overflow-x: auto }` and very wide <pre> output
+   (AnnData reprs, banner logs) would push the viewport sideways. */
 .highlight,
-div[class*="highlight-"] {
+div[class^="highlight-"] {
     margin: 1rem 0 !important;
     border-radius: 10px !important;
-    overflow: hidden !important;
     background: var(--code-bg) !important;
     border: none !important;
     box-shadow: var(--shadow-lg) !important;
 }
 
 .highlight::before,
-div[class*="highlight-"]::before {
+div[class^="highlight-"]::before {
     display: none !important;
     content: none !important;
 }
 
 .highlight pre,
-div[class*="highlight-"] pre {
+div[class^="highlight-"] pre {
     margin: 0 !important;
     padding: 0.5rem 0.875rem !important;
     background: var(--code-bg) !important;
@@ -85,12 +90,13 @@ div[class*="highlight-"] pre {
     font-size: 0.875rem !important;
     line-height: 1.5 !important;
     overflow-x: auto !important;
+    max-width: 100% !important;
     border: none !important;
     border-radius: 10px !important;
 }
 
 .highlight pre code,
-div[class*="highlight-"] pre code {
+div[class^="highlight-"] pre code {
     background: transparent !important;
     color: inherit !important;
     padding: 0 !important;
@@ -189,7 +195,7 @@ button.copybtn img {
 }
 
 .highlight:hover button.copybtn,
-div[class*="highlight-"]:hover button.copybtn {
+div[class^="highlight-"]:hover button.copybtn {
     opacity: 1 !important;
 }
 
