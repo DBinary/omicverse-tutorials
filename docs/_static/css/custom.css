@@ -311,81 +311,59 @@ button.copybtn::after,
     background: rgba(239,68,68,0.1) !important; color: #dc2626 !important;
 }
 
-/* ===== Tables ===== */
-table,
-.bd-content table,
-.bd-article table,
-article table {
-    width: 100% !important;
-    border-collapse: collapse !important;
-    margin: 1rem 0 !important;
-    font-size: 0.875rem !important;
-    border-radius: 8px !important;
-    overflow: hidden !important;
-    border: 1px solid var(--border) !important;
-    box-shadow: var(--shadow) !important;
+/* ===== Prose tables (markdown / rst tables)
+   Excludes pandas DataFrame outputs (handled by override.css) and
+   Sphinx autodoc field lists / footnotes. */
+.bd-content table:not(.dataframe):not(.footnote):not(.field-list),
+.bd-article table:not(.dataframe):not(.footnote):not(.field-list),
+article table:not(.dataframe):not(.footnote):not(.field-list) {
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    overflow: hidden;
 }
 
-table th,
-table thead th,
-.bd-content table th,
-.bd-article table th,
-article table th {
-    background: #eef4f1 !important;
-    color: var(--primary-hover) !important;
-    font-weight: 600 !important;
-    padding: 0.5rem 0.75rem !important;
-    text-align: left !important;
-    border-bottom: 1px solid var(--border) !important;
+.bd-content table:not(.dataframe):not(.footnote):not(.field-list) th,
+.bd-article table:not(.dataframe):not(.footnote):not(.field-list) th,
+article table:not(.dataframe):not(.footnote):not(.field-list) th {
+    background: #eef4f1;
+    color: var(--primary-hover);
+    font-weight: 600;
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
 }
 
-table td,
-table tbody td,
-.bd-content table td,
-.bd-article table td,
-article table td {
-    padding: 0.4rem 0.75rem !important;
-    border-bottom: 1px solid var(--border) !important;
-    color: #25312b !important;
-    background: #fff !important;
+.bd-content table:not(.dataframe):not(.footnote):not(.field-list) td,
+.bd-article table:not(.dataframe):not(.footnote):not(.field-list) td,
+article table:not(.dataframe):not(.footnote):not(.field-list) td {
+    padding: 0.4rem 0.75rem;
+    border-bottom: 1px solid var(--border);
 }
 
-table tr:last-child td {
-    border-bottom: none !important;
+.bd-content table:not(.dataframe):not(.footnote):not(.field-list) tr:last-child td,
+.bd-article table:not(.dataframe):not(.footnote):not(.field-list) tr:last-child td,
+article table:not(.dataframe):not(.footnote):not(.field-list) tr:last-child td {
+    border-bottom: none;
 }
 
-table tr:hover td {
-    background: #f3f8f5 !important;
+.bd-content table:not(.dataframe):not(.footnote):not(.field-list) tr:hover td,
+.bd-article table:not(.dataframe):not(.footnote):not(.field-list) tr:hover td,
+article table:not(.dataframe):not(.footnote):not(.field-list) tr:hover td {
+    background: #f3f8f5;
 }
 
-@media (prefers-color-scheme: dark) {
-    table th, table thead th, .bd-content table th, .bd-article table th, article table th {
-        background: #1b2922 !important;
-        color: var(--primary-light) !important;
-    }
-    table td, table tbody td, .bd-content table td, .bd-article table td, article table td {
-        color: #e2ece6 !important;
-        background: #0f1a16 !important;
-    }
-    table tr:hover td {
-        background: #1b2922 !important;
-    }
+html[data-theme="dark"] .bd-content table:not(.dataframe):not(.footnote):not(.field-list) th,
+html[data-theme="dark"] .bd-article table:not(.dataframe):not(.footnote):not(.field-list) th {
+    background: #1b2922;
+    color: var(--primary-light);
 }
-
-html[data-theme="dark"] table th,
-html[data-theme="dark"] table thead th,
-html[data-theme="dark"] .bd-content table th {
-    background: #1b2922 !important;
-    color: var(--primary-light) !important;
-}
-html[data-theme="dark"] table td,
-html[data-theme="dark"] table tbody td,
-html[data-theme="dark"] .bd-content table td {
-    color: #e2ece6 !important;
-    background: #0f1a16 !important;
-}
-html[data-theme="dark"] table tr:hover td {
-    background: #1b2922 !important;
+html[data-theme="dark"] .bd-content table:not(.dataframe):not(.footnote):not(.field-list) tr:hover td,
+html[data-theme="dark"] .bd-article table:not(.dataframe):not(.footnote):not(.field-list) tr:hover td {
+    background: #1b2922;
 }
 
 /* ===== Links ===== */
