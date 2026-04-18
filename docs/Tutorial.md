@@ -20,6 +20,20 @@ This page is the markdown overview for the tutorial structure defined in `mkdocs
 - Others
   - [TCGA database preprocess](Tutorials-bulk/t_tcga.ipynb)
 
+## Metabolomics
+
+- [Metabolomics tutorial index](Tutorials-metabol/index.md)
+- Preprocessing and univariate analysis
+  - [Metabolomics preprocessing and univariate statistics](Tutorials-metabol/t_metabol_01_intro.ipynb)
+- Multivariate discrimination
+  - [Multivariate discrimination with PLS-DA and OPLS-DA](Tutorials-metabol/t_metabol_02_multivariate.ipynb)
+- Pathway enrichment
+  - [Metabolite-set enrichment analysis (MSEA)](Tutorials-metabol/t_metabol_03_pathway.ipynb)
+- Untargeted LC-MS
+  - [Untargeted LC-MS and mummichog pathway inference](Tutorials-metabol/t_metabol_04_untargeted.ipynb)
+- Lipidomics
+  - [Lipidomics with LIPID MAPS and LION](Tutorials-metabol/t_metabol_05_lipidomics.ipynb)
+
 ## Single
 
 - [Single-cell tutorial index](Tutorials-single/index.md)

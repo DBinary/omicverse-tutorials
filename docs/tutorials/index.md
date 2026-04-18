@@ -7,6 +7,7 @@ Most notebooks are designed to work in Google Colab with minimal setup.
 :maxdepth: 2
 
 index_bulk
+index_metabol
 index_single
 index_bulk2single
 index_spatial
