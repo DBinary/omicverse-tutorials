@@ -1,5 +1,10 @@
 # Sphinx documentation dependencies for omicverse-tutorials
-sphinx>=7.0,<9
+# NOTE: sphinx 8.2.x regressed sphinx.ext.autosummary's process_generate_options
+# ("issubclass() arg 2 must be a class, a tuple of classes, or a union") —
+# pin below 8.2 until that is resolved upstream. Local Python ≤ 3.10 cannot
+# install 8.2 anyway (requires-python ≥ 3.11), so this just prevents the
+# Python-3.11 GitHub Actions runner from picking up the broken release.
+sphinx>=7.0,<8.2
 sphinx-book-theme>=1.1
 myst-nb>=1.0
 sphinx-autodoc-typehints
