@@ -866,9 +866,12 @@ results = deg_obj.get_results()
 ## v 2.1.x
 
 ### Scope
-- Summarises every change between `v2.0.0` (tagged 2026-03-18) and the current `master`.
-- Window stats: **462 commits**, **429 files changed**, **+98,799 / −17,461 lines**.
-- Two top-level themes drove the release: (1) a wave of new bio modules (Monocle 2, Xenium, CellSAM, CellCharter, Harmony v0.2, Marsilea heatmaps, CCC plotting, Nanostring, dynamic trajectories, anndataoom OOM Rust backend), and (2) a multi-month overhaul of the OVAgent / Jarvis runtime stack (60+ task-* commits across PRs #596–#603).
+- Summarises every change between `v2.0.0` (tagged 2026-03-18) and the current dev tree (`master` + the in-flight `feat/metabol` and `feat/alignment-16s-amplicon` branches that land in v2.1.x).
+- Window stats on `master`: **462 commits**, **429 files changed**, **+98,799 / −17,461 lines**. Plus the two pending feature branches add `ov.metabol` (12 commits) and `ov.micro` + `ov.alignment` (16S amplicon — 5 commits).
+- Three top-level themes drove the release:
+  1. **New bio modules** — `ov.metabol` (metabolomics), `ov.micro` + `ov.alignment` (16S amplicon → microbiome), `ov.single.Monocle`, `ov.io.read_xenium`, `ov.utils.cluster(method='pymclustR')`, CellSAM, CellCharter, Harmony v0.2, Marsilea heatmaps, CCC plotting, Nanostring spatial, dynamic trajectories, anndataoom OOM Rust backend.
+  2. **Spatial-platform support** — Xenium In Situ end-to-end (read + segmentation + viz), Visium HD SpaceRanger v4 round-trip (cellpose + `write_visium_hd_cellseg`), Nanostring CosMx FOV-aware plotting.
+  3. **OVAgent / Jarvis runtime overhaul** — ~60 `task-*` commits across PRs #596–#605 (facade slimming, multi-channel migration, P0/P1 security closures, Codex OAuth).
 
 ---
 
@@ -884,12 +887,39 @@ results = deg_obj.get_results()
 
 ### Spatial omics
 
-- **`ov.io.read_xenium`** for 10x Xenium In Situ output bundles. Handles cache files, smart pyramid-level image loading, and loads cell boundaries as WKT for `spatialseg`.
-- **CellSAM backend** for cell segmentation (alongside the existing Cellpose backend). Supports the cropped-image flow used by the Cellpose tutorial.
-- **`stardist()` → `cellseg()` rename** with backward-compatible alias.
+#### 10x Xenium In Situ — end-to-end support (PR #629)
+
+- **`ov.io.read_xenium`** — full reader for the standard Xenium `outs/` layout:
+  - `cell_feature_matrix.h5` (or `.h5ad`) → `adata.X`
+  - `cells.csv.gz` / `cells.parquet` → `adata.obs`, with `x_centroid` / `y_centroid` → `adata.obsm['spatial']`
+  - `experiment.xenium` JSON → `adata.uns['spatial'][library_id]['metadata']`
+  - Auto-resolves `library_id` from `experiment.xenium` (`region_name` → `run_name`).
+  - Exposed as both `ov.io.spatial.read_xenium` and `ov.io.read_xenium`.
+  - Verified against the `Xenium_FFPE_Human_Breast_Cancer_Rep1` public sample.
+- **`load_boundaries=True`** parameter loads `cell_boundaries.parquet` / `.csv.gz` (Xenium's long-form per-vertex table) into per-cell **WKT POLYGON** strings — sets `uns['omicverse_io']['type'] = 'xenium_seg'` so downstream code (matching `nanostring_seg`) can render cell boundaries directly via `ov.pl.spatialseg`.
+- **`cache_file` + smart pyramid-level image loading** — pick the right resolution from the multi-resolution morphology TIFF without loading the full pyramid.
+- New tutorial `t_xenium_preprocess.ipynb` showing read → preprocess → spatialseg overlay (verified on KRT7 in the Breast Cancer sample).
+
+#### 10x Visium HD — SpaceRanger v4 compat (PRs #620, #622)
+
+- **`ov.io.write_visium_hd_cellseg`** — export cell-level AnnData back to a SpaceRanger v4 directory structure so downstream tools (Loupe Browser, spaceranger-aware pipelines) can consume the cellpose / CellSAM output as if it came straight out of SpaceRanger v4.
+- **Cell IDs use the SpaceRanger v4 convention** — `cellid_000000001-1` (zero-padded, suffixed with the slice index) rather than the older spot-id format.
+- Image / scalefactors handling simplified; uses existing shapely polygon generation instead of redoing convex hulls.
+- Cellpose tutorial rewritten end-to-end with executed outputs (0 errors, 7–16 baked-in figures across iterations) showing both **Cellpose vs CellSAM** segmentation comparison on a 1/16 crop of the HD sample, and the SpaceRanger v4-compatible export round-trip.
+
+#### Nanostring CosMx — FOV-aware plotting
+
+- New `ov.pl.spatial_*` family additions for FOV-aware plotting (multi-FOV layout, per-FOV background image overlay, rasterisation options for very dense slides).
+- FOV image processing pipeline picks up cropping / rasterisation hints from `uns`.
+
+#### Cell segmentation backends
+
+- **CellSAM backend** added (alongside the existing Cellpose backend). Uses cropped images for the standard 10x HD flow.
+- **`stardist()` → `cellseg()` rename** with backward-compatible alias — clearer name now that there are multiple backends behind it.
+
+#### Other spatial features
+
 - **CellCharter integration**: new `method='cellcharter'` in `ov.utils.cluster` plus enhanced `spatial_neighbors` graph construction. Includes AutoK export, Banksy Jupyter compat, and pickle cross-version loading fixes.
-- **`write_visium_hd_cellseg`** for SpaceRanger v4-compatible export of cellpose segmentation results.
-- **Nanostring spatial plotting utilities** (`ov.pl.spatial_*` family extensions) for FOV-aware visualisation.
 - **`ov.pl.create_custom_colormap`**: generic palette helper, registered for agent discoverability.
 - **Spatial-segmentation overlay fixes**: cmap alpha now honoured in `outline_only`; FOV image processing supports rasterization options.
 - **Spatial background image scaling**: fixed bug where the H&E background was rendered tiny (coords were not scaled). Affected all `sc.pl.spatial`-style overlays.
@@ -964,6 +994,44 @@ Highlights:
 - **Dependencies**: pinned `s3fs ≥ 2023.1.0` (Python 3.12), updated scipy, removed `pymde`, removed `socksio` from default deps.
 - **CI**: dev PRs now run package + MCP workflows; flake8 excludes virtualenvs; lint regressions cleaned up across namespace exports and bootstrap tests.
 
+### `ov.metabol` — new metabolomics module (PR #636, branch `feat/metabol`)
+
+A from-scratch metabolomics analysis namespace mirroring the structure of `ov.bulk` and `ov.single`. Twelve commits, several shipped sub-releases (v0.1 → v0.3).
+
+**v0.1 — base**
+- `ov.metabol` namespace registered; LC-MS reader; vendored `gseapy` for environments without it.
+- `ID mapping` between HMDB / KEGG / LIPID MAPS / PubChem / ChEBI identifiers.
+- Lipidomics class-level summarisation.
+
+**v0.2 — pathway analysis**
+- `pyMSEA` (metabolite set enrichment) with KEGG / LION / HMDB pathway sources.
+- `pyMummichog` (peak-list-based pathway inference for unannotated LC-MS features).
+- `pathway_bar`, `pathway_dot` plots; `volcano` gains `use_pvalue` + `clip_log2fc` options.
+
+**v0.3 — multi-factor + biomarker**
+- **SERRF** — QC-RF drift correction for batch / acquisition-order systematic bias.
+- **DGCA** — differential gene/metabolite co-correlation analysis.
+- **ASCA** + **MixedLM** — multi-factor analysis (e.g. treatment × time, repeated measures).
+- **ROC / biomarker panel** — single + multi-feature ROC, AUC bootstrap CIs, panel selection.
+
+**Cross-cutting**
+- Every public API registered with `@register_function` so `ov.Agent` can dispatch metabolomics workflows.
+- **Lazy-loaded submodules** — top-level `import omicverse` cost cut 3200× by deferring metabol's heavy R-style stats imports until first call.
+- **Fetcher-based data migration** — KEGG / LION / HMDB pathway tables fetched on demand instead of shipped (drops 3 data files from the wheel).
+
+### `ov.micro` + `ov.alignment` — microbiome / 16S amplicon (PR #637, branch `feat/alignment-16s-amplicon`)
+
+End-to-end **16S rRNA amplicon → microbiome AnnData** pipeline.
+
+**`ov.alignment` — upstream sequence processing**
+- `cutadapt` primer trimming + `vsearch` UNOISE3 ASV calling + `SINTAX` taxonomic classification.
+- **Phylogeny step** — multiple sequence alignment via `MAFFT` + tree construction via `FastTree`, attached to the AnnData via `ov.micro.attach_tree(adata, tree_path)`.
+
+**`ov.micro` — downstream microbiome analysis**
+- New downstream namespace covering alpha / beta diversity, differential abundance, ordination, taxonomic-level summaries.
+- Compatible with `scikit-bio 0.6` (PR #637 round-2 review fix bumps from the deprecated 0.5 API for the phylogenetic metrics).
+- Class names follow the no-`py`-prefix convention (e.g. `MicroBiome`, `Diversity`).
+
 ### Removed / deprecated
 
 - `ov.pp.scrublet` legacy module.
@@ -972,4 +1040,5 @@ Highlights:
 - `pymde` runtime dependency.
 - `omicverse_web` Git submodule (functionality folded into `omicclaw`).
 - Legacy ReadTheDocs MkDocs config.
+- Three shipped metabolomics data files (KEGG / LION / HMDB pathway subsets) — now fetched on demand.
 
