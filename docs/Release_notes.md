@@ -863,3 +863,182 @@ results = deg_obj.get_results()
 - Updated `t_preprocess_cpu.ipynb` to match latest GPU/version detection behavior.
 - Added bilingual and deployment-oriented guidance for Jarvis and agent-related workflows.
 
+## v 2.1.x
+
+### Scope
+- Summarises every change between `v2.0.0` (tagged 2026-03-18) and the current dev tree (`master` + the in-flight `feat/metabol` and `feat/alignment-16s-amplicon` branches that land in v2.1.x).
+- Window stats on `master`: **462 commits**, **429 files changed**, **+98,799 / −17,461 lines**. Plus the two pending feature branches add `ov.metabol` (12 commits) and `ov.micro` + `ov.alignment` (16S amplicon — 5 commits).
+- Three top-level themes drove the release:
+  1. **New bio modules** — `ov.metabol` (metabolomics), `ov.micro` + `ov.alignment` (16S amplicon → microbiome), `ov.single.Monocle`, `ov.io.read_xenium`, `ov.utils.cluster(method='pymclustR')`, CellSAM, CellCharter, Harmony v0.2, Marsilea heatmaps, CCC plotting, Nanostring spatial, dynamic trajectories, anndataoom OOM Rust backend.
+  2. **Spatial-platform support** — Xenium In Situ end-to-end (read + segmentation + viz), Visium HD SpaceRanger v4 round-trip (cellpose + `write_visium_hd_cellseg`), Nanostring CosMx FOV-aware plotting.
+  3. **OVAgent / Jarvis runtime overhaul** — ~60 `task-*` commits across PRs #596–#605 (facade slimming, multi-channel migration, P0/P1 security closures, Codex OAuth).
+
+---
+
+### Single-cell trajectory inference
+
+- **`ov.single.Monocle` — pure-Python Monocle 2 reimplementation**: a from-scratch port of the R `monocle2` pipeline (DDRTree, MST, branch-state assignment, BEAM differential expression). No `rpy2`, no R install. Includes:
+  - **`method='fast'` DDRTree update** (default): caches `X X.T`, solves in `(K × D)` instead of `(K × N)`, truncates the soft-assignment R to the top-`K/5` entries per row → ~3× faster per iteration with bounded numerical drift. `method='exact'` retained for bitwise R-parity.
+  - **Delaunay-based Euclidean MST** in `_project_cells_to_mst` — replaces the O(N²) dense pairwise distance matrix (164 GB for a 143 k-cell atlas in R) with an O(N·d) Delaunay + sparse MST that is provably exact.
+  - **Robust HSMM tutorial output** matching the R Monocle 2 reference direction.
+  - Pseudotime correlation with R Monocle 2 ≥ 0.99 on every benchmark dataset; 30-100× faster.
+  - Also published as a standalone PyPI package (`monocle2-py`) for users who want trajectory inference without the full omicverse stack.
+- **Dynamic-trajectory utilities**: new feature-fitting + lineage-aware trend plotting; better Palantir trend visualisation; cleanup of Slingshot debug plots and sctour input stabilisation.
+
+### Spatial omics
+
+#### 10x Xenium In Situ — end-to-end support (PR #629)
+
+- **`ov.io.read_xenium`** — full reader for the standard Xenium `outs/` layout:
+  - `cell_feature_matrix.h5` (or `.h5ad`) → `adata.X`
+  - `cells.csv.gz` / `cells.parquet` → `adata.obs`, with `x_centroid` / `y_centroid` → `adata.obsm['spatial']`
+  - `experiment.xenium` JSON → `adata.uns['spatial'][library_id]['metadata']`
+  - Auto-resolves `library_id` from `experiment.xenium` (`region_name` → `run_name`).
+  - Exposed as both `ov.io.spatial.read_xenium` and `ov.io.read_xenium`.
+  - Verified against the `Xenium_FFPE_Human_Breast_Cancer_Rep1` public sample.
+- **`load_boundaries=True`** parameter loads `cell_boundaries.parquet` / `.csv.gz` (Xenium's long-form per-vertex table) into per-cell **WKT POLYGON** strings — sets `uns['omicverse_io']['type'] = 'xenium_seg'` so downstream code (matching `nanostring_seg`) can render cell boundaries directly via `ov.pl.spatialseg`.
+- **`cache_file` + smart pyramid-level image loading** — pick the right resolution from the multi-resolution morphology TIFF without loading the full pyramid.
+- New tutorial `t_xenium_preprocess.ipynb` showing read → preprocess → spatialseg overlay (verified on KRT7 in the Breast Cancer sample).
+
+#### 10x Visium HD — SpaceRanger v4 compat (PRs #620, #622)
+
+- **`ov.io.write_visium_hd_cellseg`** — export cell-level AnnData back to a SpaceRanger v4 directory structure so downstream tools (Loupe Browser, spaceranger-aware pipelines) can consume the cellpose / CellSAM output as if it came straight out of SpaceRanger v4.
+- **Cell IDs use the SpaceRanger v4 convention** — `cellid_000000001-1` (zero-padded, suffixed with the slice index) rather than the older spot-id format.
+- Image / scalefactors handling simplified; uses existing shapely polygon generation instead of redoing convex hulls.
+- Cellpose tutorial rewritten end-to-end with executed outputs (0 errors, 7–16 baked-in figures across iterations) showing both **Cellpose vs CellSAM** segmentation comparison on a 1/16 crop of the HD sample, and the SpaceRanger v4-compatible export round-trip.
+
+#### Nanostring CosMx — FOV-aware plotting
+
+- New `ov.pl.spatial_*` family additions for FOV-aware plotting (multi-FOV layout, per-FOV background image overlay, rasterisation options for very dense slides).
+- FOV image processing pipeline picks up cropping / rasterisation hints from `uns`.
+
+#### Cell segmentation backends
+
+- **CellSAM backend** added (alongside the existing Cellpose backend). Uses cropped images for the standard 10x HD flow.
+- **`stardist()` → `cellseg()` rename** with backward-compatible alias — clearer name now that there are multiple backends behind it.
+
+#### Other spatial features
+
+- **CellCharter integration**: new `method='cellcharter'` in `ov.utils.cluster` plus enhanced `spatial_neighbors` graph construction. Includes AutoK export, Banksy Jupyter compat, and pickle cross-version loading fixes.
+- **`ov.pl.create_custom_colormap`**: generic palette helper, registered for agent discoverability.
+- **Spatial-segmentation overlay fixes**: cmap alpha now honoured in `outline_only`; FOV image processing supports rasterization options.
+- **Spatial background image scaling**: fixed bug where the H&E background was rendered tiny (coords were not scaled). Affected all `sc.pl.spatial`-style overlays.
+- **Starfysh tutorial compatibility** restored against modern numpy/pandas/scipy/pytorch (also pins `s3fs ≥ 2023.1.0` to avoid Python 3.12 build failures).
+
+### Preprocessing & QC
+
+- **`ov.pp.qc(adata, doublets='pydoubletfinder')` — pure-Python DoubletFinder backend** alongside the existing `scrublet` backend. No R install needed; matches the R `DoubletFinder` package within published-tutorial AUC range.
+- **Auto-detect mitochondrial gene prefix** in `pp.qc` — no more hand-setting `'mt-'` vs `'MT-'` per species. Explicit override still respected.
+- **Harmony upgrade to upstream `harmonypy v0.2.0`** with three backends:
+  - **GPU**: existing PyTorch path (unchanged).
+  - **CPU NumPy**: pure-NumPy fallback for environments without torch/MLX.
+  - **MLX**: native Apple-Silicon (MPS) backend rewritten to use pure MLX operations (no numpy round-trip).
+  Restored emoji/colour/tqdm output, `n_init=1` to match upstream, and reproducibility seeds. Multiple review rounds for MLX correctness (lambda double-insert, slice-assignment crash, dead `self._W`).
+- **`torch_pca` sparse + `covariance_eigh` fallback** with dynamic memory limits — high-density sparse matrices now convert to dense before CPU PCA (instead of OOM-ing); float64 estimate, OSError handling, and dedup'd memory/threshold constants.
+- **`scale()` default**: `to_sparse=False` (no surprise sparse → dense round trips).
+- **Removed**: `ov.pp.scrublet` legacy module (use `ov.pp.qc(doublets='scrublet')` or `'pydoubletfinder'`).
+
+### I/O & out-of-memory backend
+
+- **`anndataoom` Rust backend** (optional, opt-in): out-of-memory AnnData reads via Rust. New helper `omicverse.utils.convert_adata_for_rust` and a dedicated `t_preprocess_rust` tutorial. Multiple review rounds (1st through 7th) for stability, lazy-loading semantics, and clear error paths (`no_cc=True` is now refused on the OOM backend; unsorted CSR h5ad gets a precise diagnostic; spatial viz works on lazy AnnData).
+- **`ov.io.read_xenium`** added (also covered above under Spatial).
+- **`ov.read` docstring** refreshed for the Rust backend's behaviour.
+
+### Plotting
+
+- **Marsilea-based heatmap plotting APIs** (new family): clean, declarative heatmaps with regression coverage in the test suite.
+- **Cell-cell communication (CCC) plotting APIs** (`ov.pl.ccc_*`): arrow / sigmoid / flow / scatter / chord-style ligand-receptor plots, with empty-interaction-palette guards and refined flow layouts. Aligned with the CellPhoneDB registry metadata.
+- **`ov.pl.create_custom_colormap`** with white-ramp duplicate de-duplication.
+- **Half-violin boxplot function** introduced; old equivalent deprecated.
+- Subset plotting now drops unused categories so legends are accurate; legendkit `show_at` accepts 0–1 percentiles (not raw data values).
+- Iterative refactor of plotting imports (lazy loading, optional torch dependency handling, deprecated old utilities in favour of the new embedding helpers).
+
+### `ov.utils.cluster` — `pymclustR` backend (PR #638)
+
+- New `method='pymclustR'`: pure-Python re-implementation of CRAN `mclust` covering all 14 Banfield-Raftery / Celeux-Govaert covariance parameterisations. Drop-in replacement for the legacy `'mclust_R'` rpy2 backend, which is now removed (calling it raises a `ValueError` pointing at the replacement).
+- Validation against CRAN `mclust 6.1.1` across 222 records: 12 of 14 models bitwise-identical, overall mean z-correlation 0.9935.
+- Published as `pymclustR` on PyPI.
+
+### Datasets & utilities
+
+- **Gene ID conversion** functions added to `ov.utils` (with conflict-column handling on merge), plus a database-validation helper.
+- **Function search** uses a global registry fallback for better discoverability across modules.
+- Removed `pymde` dependency; tightened scipy pin and FOV image processing.
+- Removed deprecated data files; cleaned up `biocontext` module exports.
+
+### `ov.Agent` / Jarvis / OVAgent runtime
+
+A multi-month decomposition + hardening of the agent runtime stack. ~60 numbered `task-*` commits across PRs **#596 (codex OAuth)**, **#600 (runtime upgrade)**, **#601 (decomposition follow-up)**, **#602 (PR-602 reviewer follow-ups)**, **#603 (security + runtime hardening)**, **#604/#605 (orchestration waves 3 & 4)**.
+
+Highlights:
+
+- **Smart-agent facade slimming**: `smart_agent.py` collapsed; bootstrap, auth, runtime setup, codegen/review/reflection pipeline, session/context/history services, and tool facade extracted into focused modules.
+- **OVAgent runtime decomposition**: `analysis_executor.py`, `tool_runtime.py`, `agent_backend.py`, `turn_controller.py` each split into transformer/diagnostic/sandbox/handler helpers.
+- **Tool dispatch facade collapse**: the `~45-wrapper` `CodegenToolDispatchFacadeMixin` reduced to 3 concrete delegations.
+- **Subagent infrastructure**: configurable subagent profile schema, override plumbing through runtime bootstrap, and end-to-end coverage.
+- **Jarvis multi-channel migration onto a single `MessageRuntime`**: Discord, Telegram, QQ, WeChat, Feishu, iMessage all now use the shared runtime / presenter / command / media abstractions. Channel-core session/request abstractions were also extracted (`channel_media`).
+- **Tool runtime hardening**: bounded sync bridge, fail-closed bash roots, explicit stdout guard, sandbox runtime enforcement, `pandas.eval` classification, repair-loop retry boundedness, LLM timeout, and dependency-safe parallel tool scheduler.
+- **Security closures (P0/P1 from PR #601 review)**: `SafeOsProxy` metadata escape closed via allowlist, `strip_local_paths` ReDoS-hardened, URL substring assertions replaced with parsed-hostname validation (CodeQL clean), CodeQL sensitive-data alerts cleared in real-provider E2E test, session-facade lock-test portability fixed.
+- **Backend hardening**: Gemini and OpenAI adapter exception handling, credential resolution + factory consolidation, context budget model-window registry sync, bounded silent-fallback debug logging.
+- **Web bridge & sessions**: prior-history retrieval per session, `.h5ad` channel handling, AgentBridge ↔ messaging-channel reply-text plumbing, shared kernel + AnnData support.
+- **Codex OAuth** support added to `ov.Agent` (PR #596).
+- **CLI / install**: `omicclaw` entrypoint replaces `omicverseweb`; install.sh rewritten as a guided installer with optional package menus (web, Jarvis, full bio suite); MCP startup-timeout troubleshooting documented for Windows.
+
+### Documentation & infrastructure
+
+- **Sphinx + Furo migration** (later switched to **`sphinx_book_theme`**): the docs site moved from MkDocs to Sphinx. Bilingual `docs/` + `docs_zh/` checkouts, `.readthedocs.yaml` config with repo-root-relative paths, deploy-docs CI workflow migrated, gh-pages history accumulation prevented. Pinned `Pygments < 2.20`.
+- **Multi-Omics docs reorganisation**: `Tutorials-bulk2single/` folder moved under `Tutorials-Multi-Omics/bulk-single/` with an overview page, in line with how *Multi-Omics* is now framed as a top-level domain alongside Bulk / Single / Spatial.
+- **Spatial-clustering tutorials**: original combined `t_cluster_space.ipynb` split into 5 self-contained per-method notebooks under `docs/Tutorials-space/cluster/` (GraphST, BINARY, STAGATE, CAST, BANKSY), all clustered with `method='pymclustR'` (no rpy2). New parent `cluster/index.md` with embedder paper DOIs and a recommendation table.
+- **Cellpose tutorial** rewritten with executed CellSAM vs Cellpose comparison and SpaceRanger v4-compatible export.
+- **CCC plotting** API docstrings expanded; OmicVerse Agent skill guidance updated for CellPhoneDB.
+- **Dependencies**: pinned `s3fs ≥ 2023.1.0` (Python 3.12), updated scipy, removed `pymde`, removed `socksio` from default deps.
+- **CI**: dev PRs now run package + MCP workflows; flake8 excludes virtualenvs; lint regressions cleaned up across namespace exports and bootstrap tests.
+
+### `ov.metabol` — new metabolomics module (PR #636, branch `feat/metabol`)
+
+A from-scratch metabolomics analysis namespace mirroring the structure of `ov.bulk` and `ov.single`. Twelve commits, several shipped sub-releases (v0.1 → v0.3).
+
+**v0.1 — base**
+- `ov.metabol` namespace registered; LC-MS reader; vendored `gseapy` for environments without it.
+- `ID mapping` between HMDB / KEGG / LIPID MAPS / PubChem / ChEBI identifiers.
+- Lipidomics class-level summarisation.
+
+**v0.2 — pathway analysis**
+- `pyMSEA` (metabolite set enrichment) with KEGG / LION / HMDB pathway sources.
+- `pyMummichog` (peak-list-based pathway inference for unannotated LC-MS features).
+- `pathway_bar`, `pathway_dot` plots; `volcano` gains `use_pvalue` + `clip_log2fc` options.
+
+**v0.3 — multi-factor + biomarker**
+- **SERRF** — QC-RF drift correction for batch / acquisition-order systematic bias.
+- **DGCA** — differential gene/metabolite co-correlation analysis.
+- **ASCA** + **MixedLM** — multi-factor analysis (e.g. treatment × time, repeated measures).
+- **ROC / biomarker panel** — single + multi-feature ROC, AUC bootstrap CIs, panel selection.
+
+**Cross-cutting**
+- Every public API registered with `@register_function` so `ov.Agent` can dispatch metabolomics workflows.
+- **Lazy-loaded submodules** — top-level `import omicverse` cost cut 3200× by deferring metabol's heavy R-style stats imports until first call.
+- **Fetcher-based data migration** — KEGG / LION / HMDB pathway tables fetched on demand instead of shipped (drops 3 data files from the wheel).
+
+### `ov.micro` + `ov.alignment` — microbiome / 16S amplicon (PR #637, branch `feat/alignment-16s-amplicon`)
+
+End-to-end **16S rRNA amplicon → microbiome AnnData** pipeline.
+
+**`ov.alignment` — upstream sequence processing**
+- `cutadapt` primer trimming + `vsearch` UNOISE3 ASV calling + `SINTAX` taxonomic classification.
+- **Phylogeny step** — multiple sequence alignment via `MAFFT` + tree construction via `FastTree`, attached to the AnnData via `ov.micro.attach_tree(adata, tree_path)`.
+
+**`ov.micro` — downstream microbiome analysis**
+- New downstream namespace covering alpha / beta diversity, differential abundance, ordination, taxonomic-level summaries.
+- Compatible with `scikit-bio 0.6` (PR #637 round-2 review fix bumps from the deprecated 0.5 API for the phylogenetic metrics).
+- Class names follow the no-`py`-prefix convention (e.g. `MicroBiome`, `Diversity`).
+
+### Removed / deprecated
+
+- `ov.pp.scrublet` legacy module.
+- `ov.utils.cluster(method='mclust_R')` (rpy2 bridge) — replaced by `'pymclustR'`.
+- Old plotting utilities deprecated in favour of new embedding helpers + `half_violin_boxplot`.
+- `pymde` runtime dependency.
+- `omicverse_web` Git submodule (functionality folded into `omicclaw`).
+- Legacy ReadTheDocs MkDocs config.
+- Three shipped metabolomics data files (KEGG / LION / HMDB pathway subsets) — now fetched on demand.
+
