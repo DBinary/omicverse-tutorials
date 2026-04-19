@@ -1,9 +1,7 @@
 # Sphinx documentation dependencies for omicverse-tutorials
-# NOTE: sphinx 8.2.x regressed sphinx.ext.autosummary's process_generate_options
-# ("issubclass() arg 2 must be a class, a tuple of classes, or a union") —
-# pin below 8.2 until that is resolved upstream. Local Python ≤ 3.10 cannot
-# install 8.2 anyway (requires-python ≥ 3.11), so this just prevents the
-# Python-3.11 GitHub Actions runner from picking up the broken release.
+# Pin sphinx below 8.2 — 8.2 deprecated the Config._Opt tuple interface that
+# sphinx-hoverxref 1.4.2 still relies on, so upgrading to 8.2 without a
+# corresponding hoverxref release breaks the build.
 sphinx>=7.0,<8.2
 sphinx-book-theme>=1.1
 myst-nb>=1.0
