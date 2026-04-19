@@ -9,7 +9,17 @@ This page mirrors the `Space` section in `mkdocs.yml` and provides a markdown en
 - [Analyze Nanostring data](t_nanostring_preprocess.ipynb)
 - [Analyze Xenium data](t_xenium_preprocess.ipynb)
 - [Analyze Visium HD data](t_visium_hd_preprocess.ipynb)
-- [Spatial clustering and denoising expressions](t_cluster_space.ipynb)
+
+## Cluster
+
+See [`cluster/index.md`](cluster/index.md) for the full overview, recommendations and references. One notebook per spatial embedder, all clustered with [`pymclustR`](https://pypi.org/project/pymclustR/) (no rpy2 required):
+
+- [GraphST](cluster/t_cluster_graphst.ipynb) — Long et al., *Nat. Commun.* 2023
+- [BINARY](cluster/t_cluster_binary.ipynb) — Lin et al., *Cell Genomics* 2024
+- [STAGATE](cluster/t_cluster_stagate.ipynb) — Dong & Zhang, *Nat. Commun.* 2022
+- [CAST](cluster/t_cluster_cast.ipynb) — Tang et al., *Nat. Methods* 2024
+- [BANKSY](cluster/t_cluster_banksy.ipynb) — Singhal et al., *Nat. Genet.* 2024
+- [All methods in one notebook (legacy)](t_cluster_space.ipynb)
 - [Spatial integration and clustering](t_staligner.ipynb)
 
 ## Deconvolution
