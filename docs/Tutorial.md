@@ -34,6 +34,12 @@ This page is the markdown overview for the tutorial structure defined in `mkdocs
 - Lipidomics
   - [Lipidomics with LIPID MAPS and LION](Tutorials-metabol/t_metabol_05_lipidomics.ipynb)
 
+## Microbiome
+
+- [Microbiome tutorial index](Tutorials-microbiome/index.md)
+- Amplicon (16S / ITS / 18S)
+  - [16S amplicon pipeline (cutadapt + vsearch UNOISE3 + SINTAX)](Tutorials-microbiome/t_16s_amplicon.ipynb)
+
 ## Single
 
 - [Single-cell tutorial index](Tutorials-single/index.md)
