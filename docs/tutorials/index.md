@@ -10,7 +10,7 @@ index_bulk
 index_metabol
 index_microbiome
 index_single
-index_bulk2single
+index_multi_omics
 index_spatial
 index_foundation
 index_plotting

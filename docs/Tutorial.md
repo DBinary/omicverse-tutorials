@@ -87,12 +87,13 @@ This page is the markdown overview for the tutorial structure defined in `mkdocs
   - [Multi omics analysis by MOFA and GLUE](Tutorials-single/t_mofa_glue.ipynb)
   - [Celltype annotation transfer in multi-omics](Tutorials-single/t_anno_trans.ipynb)
 
-## Bulk2Single
+## Multi-Omics
 
-- [Bulk2Single tutorial index](Tutorials-bulk2single/index.md)
-- [Bulk RNA-seq generate 'interrupted' cells to interpolate scRNA-seq](Tutorials-bulk2single/t_bulktrajblend.ipynb)
-- [Bulk RNA-seq to Single RNA-seq](Tutorials-bulk2single/t_bulk2single.ipynb)
-- [Single RNA-seq to Spatial RNA-seq](Tutorials-bulk2single/t_single2spatial.ipynb)
+- [Multi-Omics tutorial index](Tutorials-Multi-Omics/index.md)
+- [Bulk ↔ Single-cell ↔ Spatial overview](Tutorials-Multi-Omics/bulk-single/index.md)
+- [Bulk RNA-seq generate 'interrupted' cells to interpolate scRNA-seq](Tutorials-Multi-Omics/bulk-single/t_bulktrajblend.ipynb)
+- [Bulk RNA-seq to Single RNA-seq](Tutorials-Multi-Omics/bulk-single/t_bulk2single.ipynb)
+- [Single RNA-seq to Spatial RNA-seq](Tutorials-Multi-Omics/bulk-single/t_single2spatial.ipynb)
 
 ## Space
 
