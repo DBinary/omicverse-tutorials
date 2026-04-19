@@ -1,17 +1,24 @@
 # Sphinx documentation dependencies for omicverse-tutorials
-# NOTE: sphinx 8.2.x regressed sphinx.ext.autosummary's process_generate_options
-# ("issubclass() arg 2 must be a class, a tuple of classes, or a union") —
-# pin below 8.2 until that is resolved upstream. Local Python ≤ 3.10 cannot
-# install 8.2 anyway (requires-python ≥ 3.11), so this just prevents the
-# Python-3.11 GitHub Actions runner from picking up the broken release.
-sphinx>=7.0,<8.2
-sphinx-book-theme>=1.1
-myst-nb>=1.0
-sphinx-autodoc-typehints
+#
+# Pin sphinx to the 7.x line. The 8.x line has a live autosummary
+# regression: sphinx.ext.autosummary.process_generate_options raises
+# "issubclass() arg 2 must be a class, a tuple of classes, or a union"
+# whenever the codebase grows a module-level object autodoc's type
+# classifier can't hand off to issubclass (PEP 604 unions, Literal[...],
+# typing.Annotated, etc.). The bug reproduces on 8.1.3 and 8.2.x on
+# python 3.11, so we can't "pin below 8.2" as before — we pin below 8.0.
+#
+# sphinx-book-theme, myst-nb, sphinx-autodoc-typehints, sphinx-design, and
+# sphinx-hoverxref are pinned below the versions that dropped sphinx 7
+# support, so their resolver stays compatible with the main pin.
+sphinx>=7.4,<8.0
+sphinx-book-theme>=1.1,<1.2
+myst-nb>=1.1,<1.2
+sphinx-autodoc-typehints<2.4
 sphinx-copybutton
-sphinx-design
+sphinx-design<0.7
 sphinxext-opengraph
-sphinx-hoverxref
+sphinx-hoverxref<1.5
 linkify-it-py
 
 # Notebook execution support
