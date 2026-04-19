@@ -39,6 +39,7 @@ This page is the markdown overview for the tutorial structure defined in `mkdocs
 - [Microbiome tutorial index](Tutorials-microbiome/index.md)
 - Amplicon (16S / ITS / 18S)
   - [16S amplicon pipeline (cutadapt + vsearch UNOISE3 + SINTAX)](Tutorials-microbiome/t_16s_amplicon.ipynb)
+  - [16S phylogeny: MAFFT + FastTree → Faith PD + UniFrac](Tutorials-microbiome/t_16s_phylogeny.ipynb)
 
 ## Single
 

@@ -8,4 +8,5 @@ under `ov.alignment` (cutadapt, vsearch UNOISE3 + SINTAX).
 :maxdepth: 1
 
 ../Tutorials-microbiome/t_16s_amplicon
+../Tutorials-microbiome/t_16s_phylogeny
 ```
