@@ -9,4 +9,5 @@ under `ov.alignment` (cutadapt, vsearch UNOISE3 + SINTAX).
 
 ../Tutorials-microbiome/t_16s_amplicon
 ../Tutorials-microbiome/t_16s_phylogeny
+../Tutorials-microbiome/t_16s_dada2
 ```

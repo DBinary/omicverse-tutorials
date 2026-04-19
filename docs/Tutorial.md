@@ -40,6 +40,7 @@ This page is the markdown overview for the tutorial structure defined in `mkdocs
 - Amplicon (16S / ITS / 18S)
   - [16S amplicon pipeline (cutadapt + vsearch UNOISE3 + SINTAX)](Tutorials-microbiome/t_16s_amplicon.ipynb)
   - [16S phylogeny: MAFFT + FastTree → Faith PD + UniFrac](Tutorials-microbiome/t_16s_phylogeny.ipynb)
+  - [DADA2 backend (pure-Python via pydada2)](Tutorials-microbiome/t_16s_dada2.ipynb)
 
 ## Single
 
