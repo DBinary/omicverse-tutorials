@@ -1,16 +1,10 @@
 # Sphinx documentation dependencies for omicverse-tutorials
 #
-# Pin sphinx to the 7.x line. The 8.x line has a live autosummary
-# regression: sphinx.ext.autosummary.process_generate_options raises
+# Pin sphinx to the 7.x line. The 8.x line threw an
 # "issubclass() arg 2 must be a class, a tuple of classes, or a union"
-# whenever the codebase grows a module-level object autodoc's type
-# classifier can't hand off to issubclass (PEP 604 unions, Literal[...],
-# typing.Annotated, etc.). The bug reproduces on 8.1.3 and 8.2.x on
-# python 3.11, so we can't "pin below 8.2" as before — we pin below 8.0.
-#
-# sphinx-book-theme, myst-nb, sphinx-autodoc-typehints, sphinx-design, and
-# sphinx-hoverxref are pinned below the versions that dropped sphinx 7
-# support, so their resolver stays compatible with the main pin.
+# error at autosummary.process_generate_options on python 3.11 — the pin
+# above 7 keeps us on the classic autosummary code path that surfaces the
+# real error instead of swallowing it.
 sphinx>=7.4,<8.0
 sphinx-book-theme>=1.1,<1.2
 myst-nb>=1.1,<1.2
@@ -25,9 +19,18 @@ linkify-it-py
 ipykernel
 nbformat
 
-# Scientific stack (for autodoc imports)
+# Scientific stack (for autodoc imports).
+#
+# scipy 1.16 added the experimental `scipy.stats._new_distributions` module
+# whose import side-effect calls `_combine_docs` → `_generate_example` →
+# `xp_promote` → `is_torch_array(arg)` → `_issubclass_fast(cls, "torch",
+# "Tensor")`, which raises `TypeError: issubclass() arg 2 must be a class`
+# when torch isn't installed. That fires whenever sklearn's import chain
+# pulls in scipy.stats, which any autodoc of `omicverse.bulk` triggers.
+# Pin scipy below 1.16 to dodge the experimental module entirely.
 numpy
 pandas
 matplotlib
 anndata
 scanpy
+scipy>=1.11,<1.16
