@@ -80,9 +80,11 @@ This page is the markdown overview for the tutorial structure defined in `mkdocs
   - [Differential expression analysis [Meta Cell]](Tutorials-single/t_scdeg.ipynb)
   - [Gene Regulatory Network Analysis with SCENIC](Tutorials-single/t_scenic.ipynb)
   - [Pathway analysis with AUCell](Tutorials-single/t_aucell.ipynb)
-  - [Cell interaction with CellPhoneDB](Tutorials-single/t_cellphonedb.ipynb)
   - [Drug response predict with scDrug](Tutorials-single/t_scdrug.ipynb)
   - [Batch Correction with SIMBA](Tutorials-single/t_simba.ipynb)
+- Communication
+  - [Cell interaction with CellPhoneDB](Tutorials-single/t_cellphonedb.ipynb)
+  - [Cell interaction with LIANA+](Tutorials-single/t_liana.ipynb)
 - Velocity
   - [Velocity Basic Calculation](Tutorials-velo/t_velo.ipynb)
   - [Velocity Optimization](Tutorials-velo/t_graphvelo.ipynb)

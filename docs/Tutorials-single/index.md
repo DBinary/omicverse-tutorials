@@ -44,9 +44,13 @@ This page mirrors the `Single` section in `mkdocs.yml`.
 - [Differential expression analysis [Meta Cell]](t_scdeg.ipynb)
 - [Gene Regulatory Network Analysis with SCENIC](t_scenic.ipynb)
 - [Pathway analysis with AUCell](t_aucell.ipynb)
-- [Cell interaction with CellPhoneDB](t_cellphonedb.ipynb)
 - [Drug response predict with scDrug](t_scdrug.ipynb)
 - [Batch Correction with SIMBA](t_simba.ipynb)
+
+## Communication
+
+- [Cell interaction with CellPhoneDB](t_cellphonedb.ipynb)
+- [Cell interaction with LIANA+](t_liana.ipynb)
 
 ## Multi-omics
 
