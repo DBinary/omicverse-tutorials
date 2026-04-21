@@ -7,3 +7,4 @@ This page mirrors the `Plotting` section in `mkdocs.yml`.
 - [Palette optimization for publication-quality single-cell & spatial plots](t_palette.ipynb)
 - [Scientific plotting for publication](t_publication_plotting.ipynb)
 - [Color system](t_visualize_colorsystem.ipynb)
+- [Circular UMAP + plot1cell-style visualizations](t_plot1cell.ipynb)
