@@ -43,9 +43,13 @@
 - [差异表达分析 [元细胞]](t_scdeg.ipynb)
 - [使用 SCENIC 的基因调控网络分析](t_scenic.ipynb)
 - [使用 AUCell 的通路分析](t_aucell.ipynb)
-- [使用 CellPhoneDB 的细胞相互作用](t_cellphonedb.ipynb)
 - [使用 scDrug 预测药物反应](t_scdrug.ipynb)
 - [使用 SIMBA 的批次纠正](t_simba.ipynb)
+
+## 通讯
+
+- [使用 CellPhoneDB 的细胞相互作用](t_cellphonedb.ipynb)
+- [使用 LIANA+ 的细胞相互作用](t_liana.ipynb)
 
 ## 多组学
 

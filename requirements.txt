@@ -34,3 +34,4 @@ matplotlib
 anndata
 scanpy
 scipy>=1.11,<1.16
+liana

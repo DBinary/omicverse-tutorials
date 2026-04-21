@@ -62,9 +62,17 @@
 ../Tutorials-single/t_scdeg
 ../Tutorials-single/t_scenic
 ../Tutorials-single/t_aucell
-../Tutorials-single/t_cellphonedb
 ../Tutorials-single/t_scdrug
 ../Tutorials-single/t_simba
+```
+
+## 通讯
+
+```{toctree}
+:maxdepth: 1
+
+../Tutorials-single/t_cellphonedb
+../Tutorials-single/t_liana
 ```
 
 ## 速度分析
