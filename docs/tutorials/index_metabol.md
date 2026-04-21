@@ -19,4 +19,5 @@ discovery, correlation analysis, pathway enrichment (ORA + GSEA + mummichog), li
 ../Tutorials-metabol/t_metabol_08_biomarker
 ../Tutorials-metabol/t_metabol_09_dgca
 ../Tutorials-metabol/t_metabol_10_multiomics
+../Tutorials-metabol/t_metabol_11_real_data_mtbls1
 ```

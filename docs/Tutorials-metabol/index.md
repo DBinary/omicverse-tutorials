@@ -1,6 +1,6 @@
 # Tutorials of Metabolomics
 
-The ten tutorials start from a peak intensity table (produced upstream by XCMS / MZmine / MS-DIAL / MetaboAnalyst) and cover the full downstream workflow: QC, batch correction, statistics (two-group + multi-factor + time-series), biomarker discovery, correlation networks, and multi-omics integration.
+The tutorials start from a peak intensity table (produced upstream by XCMS / MZmine / MS-DIAL / MetaboAnalyst) and cover the full downstream workflow: QC, batch correction, statistics (two-group + multi-factor + time-series), biomarker discovery, correlation networks, multi-omics integration, and a real-data case study on a public Metabolights dataset.
 
 ## Preprocessing and univariate analysis
 
@@ -41,3 +41,7 @@ The ten tutorials start from a peak intensity table (produced upstream by XCMS /
 ## Multi-omics integration
 
 - [Joint analysis of metabolomics and RNA-seq with MOFA+](t_metabol_10_multiomics.ipynb)
+
+## Real-data case study
+
+- [End-to-end workflow on MTBLS1 (urine NMR, Type 2 Diabetes)](t_metabol_11_real_data_mtbls1.ipynb) — public Metabolights data, shows which tools apply and which don't for a QC-less cross-sectional study.
