@@ -162,6 +162,7 @@ This page is the markdown overview for the tutorial structure defined in `mkdocs
 - [Visualization of bulk RNA-seq](Tutorials-plotting/t_visualize_bulk.ipynb)
 - [Palette optimization for publication-quality single-cell & spatial plots](Tutorials-plotting/t_palette.ipynb)
 - [Color system](Tutorials-plotting/t_visualize_colorsystem.ipynb)
+- [Circular UMAP + plot1cell-style visualizations](Tutorials-plotting/t_plot1cell.ipynb)
 
 ## OmicClaw
 
