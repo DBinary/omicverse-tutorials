@@ -9,4 +9,5 @@
 ../Tutorials-plotting/t_visualize_bulk
 ../Tutorials-plotting/t_palette
 ../Tutorials-plotting/t_visualize_colorsystem
+../Tutorials-plotting/t_plot1cell
 ```
