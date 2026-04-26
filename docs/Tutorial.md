@@ -70,8 +70,13 @@ This page is the markdown overview for the tutorial structure defined in `mkdocs
   - [Consensus annotation with CellVote](Tutorials-single/t_cellvote.md)
 - Trajectory
   - [Prediction of absolute developmental potential using CytoTrace2](Tutorials-single/t_cytotrace.ipynb)
-  - [Basic Trajectory Inference](Tutorials-single/t_traj.ipynb)
+  - [Trajectory Inference with Diffusion Map and PAGA](Tutorials-single/t_traj_diffusion.ipynb)
+  - [Trajectory Inference with Slingshot](Tutorials-single/t_traj_slingshot.ipynb)
+  - [Trajectory Inference with Palantir](Tutorials-single/t_traj_palantir.ipynb)
+  - [Trajectory Inference with scTour](Tutorials-single/t_traj_sctour.ipynb)
+  - [Trajectory Inference with Monocle 2 on the Olsson Hematopoiesis Dataset](Tutorials-single/t_traj_monocle2_olsson.ipynb)
   - [Trajectory Inference with StaVIA](Tutorials-single/t_stavia.ipynb)
+  - [Trajectory Inference with VIA and scVelo](Tutorials-single/t_via_velo.ipynb)
   - [Timing-associated genes analysis with TimeFateKernel](Tutorials-single/t_cellfate_gene.ipynb)
   - [Identify the driver regulators of cell fate decisions](Tutorials-single/t_cellfate.ipynb)
 - Cell Structure
@@ -82,12 +87,13 @@ This page is the markdown overview for the tutorial structure defined in `mkdocs
   - [Pathway analysis with AUCell](Tutorials-single/t_aucell.ipynb)
   - [Drug response predict with scDrug](Tutorials-single/t_scdrug.ipynb)
   - [Batch Correction with SIMBA](Tutorials-single/t_simba.ipynb)
-- Communication
-  - [Cell interaction with CellPhoneDB](Tutorials-single/t_cellphonedb.ipynb)
-  - [Cell interaction with LIANA+](Tutorials-single/t_liana.ipynb)
+- Cell-Cell Communication
+  - [Cell-cell communication with CellPhoneDB](Tutorials-single/t_ccc_cellphonedb.ipynb)
+  - [Cell-cell communication with LIANA+](Tutorials-single/t_ccc_liana.ipynb)
 - Velocity
   - [Velocity Basic Calculation](Tutorials-velo/t_velo.ipynb)
   - [Velocity Optimization](Tutorials-velo/t_graphvelo.ipynb)
+  - [Velocity-guided CellRank Analysis](Tutorials-velo/t_velo_cellrank.ipynb)
 - Multi-omics
   - [Multi omics analysis by MOFA](Tutorials-single/t_mofa.ipynb)
   - [Multi omics analysis by MOFA and GLUE](Tutorials-single/t_mofa_glue.ipynb)

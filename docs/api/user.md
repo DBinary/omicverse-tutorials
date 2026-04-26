@@ -265,6 +265,7 @@ Public registry entries listed here: 301
    pl.add_palue
    pl.add_pie2spatial
    pl.add_streamplot
+   pl.branch_streamplot
    pl.bardotplot
    pl.boxplot
    pl.calculate_gene_density
