@@ -46,8 +46,13 @@
 :maxdepth: 1
 
 ../Tutorials-single/t_cytotrace
-../Tutorials-single/t_traj
+../Tutorials-single/t_traj_diffusion
+../Tutorials-single/t_traj_slingshot
+../Tutorials-single/t_traj_palantir
+../Tutorials-single/t_traj_sctour
+../Tutorials-single/t_traj_monocle2_olsson
 ../Tutorials-single/t_stavia
+../Tutorials-single/t_via_velo
 ../Tutorials-single/t_cellfate_gene
 ../Tutorials-single/t_cellfate
 ```
@@ -66,13 +71,13 @@
 ../Tutorials-single/t_simba
 ```
 
-## 通讯
+## 细胞-细胞通讯
 
 ```{toctree}
 :maxdepth: 1
 
-../Tutorials-single/t_cellphonedb
-../Tutorials-single/t_liana
+../Tutorials-single/t_ccc_cellphonedb
+../Tutorials-single/t_ccc_liana
 ```
 
 ## 速度分析
@@ -82,6 +87,7 @@
 
 ../Tutorials-velo/t_velo
 ../Tutorials-velo/t_graphvelo
+../Tutorials-velo/t_velo_cellrank
 ```
 
 ## 多组学

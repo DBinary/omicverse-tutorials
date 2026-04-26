@@ -4,3 +4,4 @@
 
 - [RNA速率分析基础](t_velo.ipynb)
 - [GraphVelo - 图神经网络增强的速率分析](t_graphvelo.ipynb)
+- [基于 RNA velocity 的 CellRank 分析](t_velo_cellrank.ipynb)

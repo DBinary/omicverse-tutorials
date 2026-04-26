@@ -31,8 +31,13 @@
 ## 轨迹
 
 - [使用 CytoTrace2 预测绝对发育潜能](t_cytotrace.ipynb)
-- [基本轨迹推断](t_traj.ipynb)
+- [使用 Diffusion Map 和 PAGA 的轨迹推断](t_traj_diffusion.ipynb)
+- [使用 Slingshot 的轨迹推断](t_traj_slingshot.ipynb)
+- [使用 Palantir 的轨迹推断](t_traj_palantir.ipynb)
+- [使用 scTour 的轨迹推断](t_traj_sctour.ipynb)
+- [使用 Monocle 2 进行 Olsson 造血分化轨迹推断](t_traj_monocle2_olsson.ipynb)
 - [使用 StaVIA 的轨迹推断](t_stavia.ipynb)
+- [使用 VIA 和 scVelo 的轨迹推断](t_via_velo.ipynb)
 - [使用 TimeFateKernel 的与时间相关的基因分析](t_cellfate_gene.ipynb)
 - [识别细胞命运决定的驱动调节因子](t_cellfate.ipynb)
 
@@ -46,10 +51,10 @@
 - [使用 scDrug 预测药物反应](t_scdrug.ipynb)
 - [使用 SIMBA 的批次纠正](t_simba.ipynb)
 
-## 通讯
+## 细胞-细胞通讯
 
-- [使用 CellPhoneDB 的细胞相互作用](t_cellphonedb.ipynb)
-- [使用 LIANA+ 的细胞相互作用](t_liana.ipynb)
+- [使用 CellPhoneDB 进行细胞-细胞通讯分析](t_ccc_cellphonedb.ipynb)
+- [使用 LIANA+ 进行细胞-细胞通讯分析](t_ccc_liana.ipynb)
 
 ## 多组学
 
