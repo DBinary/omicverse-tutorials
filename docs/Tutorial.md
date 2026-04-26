@@ -117,6 +117,7 @@ This page is the markdown overview for the tutorial structure defined in `mkdocs
   - [Visium 10x HD Cellpose](Tutorials-space/t_cellpose.ipynb)
   - [Analyze Nanostring data](Tutorials-space/t_nanostring_preprocess.ipynb)
   - [Analyze Xenium data](Tutorials-space/t_xenium_preprocess.ipynb)
+  - [Analyze 10x Atera (WTA Preview) data](Tutorials-space/t_atera_preprocess.ipynb)
   - [Analyze Visium HD data](Tutorials-space/t_visium_hd_preprocess.ipynb)
   - [Spatial clustering and denoising expressions](Tutorials-space/t_cluster_space.ipynb)
   - [Spatial integration and clustering](Tutorials-space/t_staligner.ipynb)
