@@ -822,6 +822,12 @@
       "chinese_hash": "493824d6900249408d8e5cdd96fa31f51eb5113f4319913714e673b5de383460",
       "status": "ok"
     },
+    "Tutorials-space/t_atera_preprocess.ipynb": {
+      "english_hash": "1aaf4cd16a0c8bf813247ac50abafefe8ef2587aff71a471b8cd17ae4fe67844",
+      "chinese_path": "Tutorials-space/t_atera_preprocess.ipynb",
+      "chinese_hash": "1aaf4cd16a0c8bf813247ac50abafefe8ef2587aff71a471b8cd17ae4fe67844",
+      "status": "ok"
+    },
     "Tutorials-space/t_cellpose.ipynb": {
       "english_hash": "b2fd069f05dae8df4ddb8ff9e9aeef5f777259cf2d937b2b6709c4924e18a62e",
       "chinese_path": "Tutorials-space/t_cellpose.ipynb",

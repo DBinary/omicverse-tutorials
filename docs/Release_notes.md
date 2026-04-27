@@ -900,6 +900,17 @@ results = deg_obj.get_results()
 - **`cache_file` + smart pyramid-level image loading** — pick the right resolution from the multi-resolution morphology TIFF without loading the full pyramid.
 - New tutorial `t_xenium_preprocess.ipynb` showing read → preprocess → spatialseg overlay (verified on KRT7 in the Breast Cancer sample).
 
+#### 10x Atera (WTA Preview) — end-to-end support (PR #700, omicverse-tutorials#30)
+
+- **`ov.io.read_atera`** — reader for the 10x Atera (whole-transcriptome) `outs/` bundle. Atera ships a Xenium-format core (`cell_feature_matrix.h5`, `cells.parquet`, `cell_boundaries.parquet`, `experiment.xenium`) plus four Atera-only additions, all handled by the reader:
+  - `nucleus_boundaries.parquet` → `obs['nucleus_geometry']` (WKT POLYGON).
+  - `morphology_focus/ch####_<tag>.ome.tif` — content-named multi-stain pyramid TIFFs. Channel selector accepts a semantic tag (`'dapi'` / `'boundary'` / `'rna'` / `'stroma'`), a filename substring (`'cd45'`, `'18s'`), or an integer-as-string index. tifffile's OME multi-file series is bypassed (`is_ome=False`) so each channel's pyramid IFDs are walked standalone.
+  - Optional vendor `cell_groups.csv` merge → `obs['cell_group']` and `obs['cell_group_color']`, NaN-preserving for cells absent from the CSV.
+  - Optional H&E OME-TIFF + 3×3 affine CSV → `uns['spatial'][lib]['images']['he']` and `scalefactors['he_affine']` / `'he_downsample'`.
+  - Verified on the public `WTA_Preview_FFPE_Breast_Cancer` sample (170,057 cells × 18,028 genes after dropping 9,076 control probes/codewords).
+- New helpers extracted from the tutorial — `ov.pl.to_rgb_grayscale` (percentile-clipped RGB stack so morphology overlays bypass matplotlib's default viridis colormap), `ov.pl.sync_categorical_palette` (wires a per-cell colour column into `uns[<key>_colors]`), `ov.space.subset_window` (rectangular spatial-window subset preserving `uns`).
+- New tutorial `t_atera_preprocess.ipynb` — load the bundle, render the four morphology channels in a 2 × 2 grid, plot the vendor cell-group classifier with `ov.pl.spatial`, render polygon zooms via `ov.pl.spatialseg(img_key=...)` against each of the four channels, run a standard preprocessing → HVG → PCA pipeline, and map canonical breast-cancer markers (KRT8 / PTPRC / COL1A1 / PECAM1).
+
 #### 10x Visium HD — SpaceRanger v4 compat (PRs #620, #622)
 
 - **`ov.io.write_visium_hd_cellseg`** — export cell-level AnnData back to a SpaceRanger v4 directory structure so downstream tools (Loupe Browser, spaceranger-aware pipelines) can consume the cellpose / CellSAM output as if it came straight out of SpaceRanger v4.
