@@ -8,6 +8,7 @@ This page mirrors the `Space` section in `mkdocs.yml` and provides a markdown en
 - [Visium 10x HD Cellpose](t_cellpose.ipynb)
 - [Analyze Nanostring data](t_nanostring_preprocess.ipynb)
 - [Analyze Xenium data](t_xenium_preprocess.ipynb)
+- [Analyze 10x Atera (WTA Preview) data](t_atera_preprocess.ipynb)
 - [Analyze Visium HD data](t_visium_hd_preprocess.ipynb)
 
 ## Cluster

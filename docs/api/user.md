@@ -8,7 +8,7 @@ import omicverse as ov
 
 This page is auto-generated from `@register_function` entries in the OmicVerse registry.
 
-Public registry entries listed here: 301
+Public registry entries listed here: 414
 
 ```{eval-rst}
 .. currentmodule:: omicverse
@@ -65,15 +65,37 @@ Public registry entries listed here: 301
    :toctree: reference/
    :nosignatures:
 
+   alignment.amplicon_16s_pipeline
+   alignment.build_amplicon_anndata
+   alignment.build_phylogeny
    alignment.bulk_rnaseq_pipeline
    alignment.count
+   alignment.cutadapt
+   alignment.dada2_pipeline
+   alignment.denoise
+   alignment.dereplicate
    alignment.fastp
+   alignment.fasttree
    alignment.featureCount
+   alignment.fetch_rdp
+   alignment.fetch_silva
+   alignment.fetch_sintax_ref
+   alignment.filter_and_trim
+   alignment.filter_quality
    alignment.fqdump
+   alignment.learn_errors
+   alignment.mafft
+   alignment.make_seqtab
+   alignment.merge_pairs
    alignment.parallel_fastq_dump
    alignment.prefetch
    alignment.ref
+   alignment.remove_chimeras
+   alignment.sintax
    alignment.STAR
+   alignment.uchime3_denovo
+   alignment.unoise3
+   alignment.usearch_global
 ```
 
 ## Preprocessing (`pp`)
@@ -86,6 +108,7 @@ Public registry entries listed here: 301
    pp.anndata_to_CPU
    pp.anndata_to_GPU
    pp.binary_search
+   pp.champ
    pp.filter_cells
    pp.filter_genes
    pp.highly_variable_features
@@ -123,6 +146,7 @@ Public registry entries listed here: 301
 
    single.Annotation
    single.AnnotationRef
+   single.auto_resolution
    single.autoResolution
    single.batch_correction
    single.CellOntologyMapper
@@ -133,6 +157,7 @@ Public registry entries listed here: 301
    single.cytotrace2
    single.DCT
    single.DEG
+   single.download_cellphonedb_database
    single.download_cl
    single.Drug_Response
    single.dynamic_features
@@ -140,6 +165,7 @@ Public registry entries listed here: 301
    single.factor_exact
    single.Fate
    single.find_markers
+   single.format_liana_results
    single.gene_trends
    single.generate_scRNA_report
    single.geneset_aucell
@@ -171,6 +197,7 @@ Public registry entries listed here: 301
    single.pyTOSICA
    single.pyVIA
    single.run_cellphonedb_v5
+   single.run_liana
    single.scanpy_cellanno_from_dict
    single.SCENIC
    single.TrajInfer
@@ -199,6 +226,106 @@ Public registry entries listed here: 301
    bulk.string_interaction
 ```
 
+## Metabolomics (`metabol`)
+
+```{eval-rst}
+.. autosummary::
+   :toctree: reference/
+   :nosignatures:
+
+   metabol.aggregate_by_class
+   metabol.annotate_lipids
+   metabol.annotate_peaks
+   metabol.anova
+   metabol.asca
+   metabol.asca_variance_bar
+   metabol.biomarker_panel
+   metabol.blank_filter
+   metabol.corr_network
+   metabol.corr_network_plot
+   metabol.cv_filter
+   metabol.dgca
+   metabol.dgca_class_bar
+   metabol.differential
+   metabol.drift_correct
+   metabol.fetch_chebi_compounds
+   metabol.fetch_hmdb_from_name
+   metabol.fetch_kegg_pathways
+   metabol.fetch_lion_associations
+   metabol.impute
+   metabol.lion_enrichment
+   metabol.load_pathways
+   metabol.map_ids
+   metabol.meba
+   metabol.mixed_model
+   metabol.msea_gsea
+   metabol.msea_ora
+   metabol.mummichog_basic
+   metabol.normalize
+   metabol.opls_da
+   metabol.parse_lipid
+   metabol.pathway_bar
+   metabol.pathway_dot
+   metabol.plsda
+   metabol.pyMetabo
+   metabol.read_lcms
+   metabol.read_metaboanalyst
+   metabol.read_wide
+   metabol.roc_feature
+   metabol.run_mofa
+   metabol.s_plot
+   metabol.sample_qc
+   metabol.sample_qc_plot
+   metabol.serrf
+   metabol.significant_metabolites
+   metabol.transform
+   metabol.vip_bar
+   metabol.vip_table
+   metabol.volcano
+```
+
+## Microbiome (`micro`)
+
+```{eval-rst}
+.. autosummary::
+   :toctree: reference/
+   :nosignatures:
+
+   micro.Alpha
+   micro.ancombc
+   micro.attach_tree
+   micro.Beta
+   micro.braycurtis
+   micro.clr
+   micro.collapse_taxa
+   micro.combine_studies
+   micro.conditional_probabilities
+   micro.cooccurrence
+   micro.DA
+   micro.deseq2
+   micro.fetch_franzosa_ibd_2019
+   micro.filter_by_prevalence
+   micro.fit
+   micro.ilr
+   micro.meta_da
+   micro.MMvec
+   micro.nmds
+   micro.observed
+   micro.Ordinate
+   micro.paired_cca
+   micro.paired_spearman
+   micro.pcoa
+   micro.plot_embedding_biplot
+   micro.plot_mmvec_training
+   micro.proportion_explained
+   micro.rarefy
+   micro.run
+   micro.shannon
+   micro.simulate_paired
+   micro.top_pairs
+   micro.wilcoxon
+```
+
 ## Spatial transcriptomics (`space`)
 
 ```{eval-rst}
@@ -222,6 +349,7 @@ Public registry entries listed here: 301
    space.map_spatial_manual
    space.merge_cluster
    space.moranI
+   space.nmf_tissue_zones
    space.pySpaceFlow
    space.pySTAGATE
    space.pySTAligner
@@ -268,6 +396,7 @@ Public registry entries listed here: 301
    pl.branch_streamplot
    pl.bardotplot
    pl.boxplot
+   pl.branch_streamplot
    pl.calculate_gene_density
    pl.ccc_heatmap
    pl.ccc_network_plot
@@ -295,6 +424,7 @@ Public registry entries listed here: 301
    pl.marker_heatmap
    pl.markers_dotplot
    pl.palette
+   pl.plot1cell
    pl.plot_cellproportion
    pl.plot_ConvexHull
    pl.plot_embedding_celltype
@@ -421,6 +551,7 @@ Public registry entries listed here: 301
    utils.get_gene_annotation
    utils.gtf_to_pair_tsv
    utils.LDA_topic
+   utils.load_metabolights
    utils.mde
    utils.plot_paga
    utils.refine_label

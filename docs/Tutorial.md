@@ -117,6 +117,7 @@ This page is the markdown overview for the tutorial structure defined in `mkdocs
   - [Visium 10x HD Cellpose](Tutorials-space/t_cellpose.ipynb)
   - [Analyze Nanostring data](Tutorials-space/t_nanostring_preprocess.ipynb)
   - [Analyze Xenium data](Tutorials-space/t_xenium_preprocess.ipynb)
+  - [Analyze 10x Atera (WTA Preview) data](Tutorials-space/t_atera_preprocess.ipynb)
   - [Analyze Visium HD data](Tutorials-space/t_visium_hd_preprocess.ipynb)
   - [Spatial clustering and denoising expressions](Tutorials-space/t_cluster_space.ipynb)
   - [Spatial integration and clustering](Tutorials-space/t_staligner.ipynb)
@@ -131,35 +132,14 @@ This page is the markdown overview for the tutorial structure defined in `mkdocs
   - [Spatial IsoDepth Calculation](Tutorials-space/t_gaston.ipynb)
   - [Single cell spatial alignment tools](Tutorials-space/t_slat.ipynb)
 
-## Foundation Model
+## Foundation Model (`ov.llm.SCLLMManager`)
 
 - [Foundation model overview](Tutorials-llm/index.md)
-- [ov.fm API Overview](Tutorials-llm/t_fm_guide.md)
-- [ov.fm Quick Start](Tutorials-llm/t_fm.ipynb)
-- Skill-ready models
-  - [scGPT guide](Tutorials-llm/t_fm_scgpt_guide.md) and [tutorial](Tutorials-llm/t_scgpt.ipynb)
-  - [Geneformer guide](Tutorials-llm/t_fm_geneformer_guide.md) and [tutorial](Tutorials-llm/t_geneformer.ipynb)
-  - [UCE guide](Tutorials-llm/t_fm_uce_guide.md) and [tutorial](Tutorials-llm/t_uce.ipynb)
-  - [scFoundation guide](Tutorials-llm/t_fm_scfoundation_guide.md) and [tutorial](Tutorials-llm/t_scfoundation.ipynb)
-  - [CellPLM guide](Tutorials-llm/t_fm_cellplm_guide.md) and [tutorial](Tutorials-llm/t_cellplm.ipynb)
-- Core and specialized models
-  - [scBERT](Tutorials-llm/t_fm_scbert_guide.md)
-  - [GeneCompass](Tutorials-llm/t_fm_genecompass_guide.md)
-  - [Nicheformer](Tutorials-llm/t_fm_nicheformer_guide.md)
-  - [scMulan](Tutorials-llm/t_fm_scmulan_guide.md)
-  - [tGPT](Tutorials-llm/t_fm_tgpt_guide.md)
-  - [CellFM](Tutorials-llm/t_fm_cellfm_guide.md)
-  - [scCello](Tutorials-llm/t_fm_sccello_guide.md)
-  - [scPRINT](Tutorials-llm/t_fm_scprint_guide.md)
-  - [AIDO.Cell](Tutorials-llm/t_fm_aidocell_guide.md)
-  - [PULSAR](Tutorials-llm/t_fm_pulsar_guide.md)
-  - [Tabula](Tutorials-llm/t_fm_tabula_guide.md)
-  - [ATACformer](Tutorials-llm/t_fm_atacformer_guide.md)
-  - [scPlantLLM](Tutorials-llm/t_fm_scplantllm_guide.md)
-  - [LangCell](Tutorials-llm/t_fm_langcell_guide.md)
-  - [Cell2Sentence](Tutorials-llm/t_fm_cell2sentence_guide.md)
-  - [GenePT](Tutorials-llm/t_fm_genept_guide.md)
-  - [ChatCell](Tutorials-llm/t_fm_chatcell_guide.md)
+- [scGPT](Tutorials-llm/t_scgpt.ipynb)
+- [Geneformer](Tutorials-llm/t_geneformer.ipynb)
+- [scFoundation](Tutorials-llm/t_scfoundation.ipynb)
+- [UCE](Tutorials-llm/t_uce.ipynb)
+- [CellPLM](Tutorials-llm/t_cellplm.ipynb)
 
 ## Plotting
 

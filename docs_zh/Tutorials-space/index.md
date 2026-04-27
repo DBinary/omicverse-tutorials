@@ -7,6 +7,7 @@
 - [空间转录组学数据的裁剪和旋转](t_crop_rotate.ipynb)
 - [Visium 10x HD Cellpose](t_cellpose.ipynb)
 - [分析 Nanostring 数据](t_nanostring_preprocess.ipynb)
+- [分析 10x Atera (WTA Preview) 数据](t_atera_preprocess.ipynb)
 - [分析 Visium HD 数据](t_visium_hd_preprocess.ipynb)
 - [空间聚类和表达去噪](t_cluster_space.ipynb)
 - [空间整合与聚类](t_staligner.ipynb)
