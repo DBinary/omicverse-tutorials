@@ -36,7 +36,7 @@ This page mirrors the `Single` section in `mkdocs.yml`.
 - [Trajectory Inference with Slingshot](t_traj_slingshot.ipynb)
 - [Trajectory Inference with Palantir](t_traj_palantir.ipynb)
 - [Trajectory Inference with scTour](t_traj_sctour.ipynb)
-- [Trajectory Inference with Monocle 2 on the Olsson Hematopoiesis Dataset](t_traj_monocle2_olsson.ipynb)
+- [Trajectory Inference with Monocle 2 on the Olsson Hematopoiesis Dataset](t_traj_monocle2.ipynb)
 - [Trajectory Inference with StaVIA](t_stavia.ipynb)
 - [Trajectory Inference with VIA and scVelo](t_via_velo.ipynb)
 - [Timing-associated genes analysis with TimeFateKernel](t_cellfate_gene.ipynb)

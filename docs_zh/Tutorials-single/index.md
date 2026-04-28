@@ -35,7 +35,7 @@
 - [使用 Slingshot 的轨迹推断](t_traj_slingshot.ipynb)
 - [使用 Palantir 的轨迹推断](t_traj_palantir.ipynb)
 - [使用 scTour 的轨迹推断](t_traj_sctour.ipynb)
-- [使用 Monocle 2 进行 Olsson 造血分化轨迹推断](t_traj_monocle2_olsson.ipynb)
+- [使用 Monocle 2 进行 Olsson 造血分化轨迹推断](t_traj_monocle2.ipynb)
 - [使用 StaVIA 的轨迹推断](t_stavia.ipynb)
 - [使用 VIA 和 scVelo 的轨迹推断](t_via_velo.ipynb)
 - [使用 TimeFateKernel 的与时间相关的基因分析](t_cellfate_gene.ipynb)
