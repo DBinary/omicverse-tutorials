@@ -16,6 +16,7 @@
 
 - [识别伪空间图](t_spaceflow.ipynb)
 - [基于参考 scRNA-seq 的空间反卷积](t_decov.ipynb)
+- [使用 RCTD 进行空间反卷积](t_decov_rctd.ipynb)
 - [FlashDeconv (快速、无GPU反卷积)](t_flashdeconv.ipynb)
 - [无参考 scRNA-seq 的空间反卷积](t_starfysh_new.ipynb)
 

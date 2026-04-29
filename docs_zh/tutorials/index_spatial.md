@@ -23,6 +23,7 @@
 
 ../Tutorials-space/t_spaceflow
 ../Tutorials-space/t_decov
+../Tutorials-space/t_decov_rctd
 ../Tutorials-space/t_flashdeconv
 ../Tutorials-space/t_starfysh_new
 ```

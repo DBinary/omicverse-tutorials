@@ -124,6 +124,7 @@ This page is the markdown overview for the tutorial structure defined in `mkdocs
 - Deconvolution
   - [Identifying Pseudo-Spatial Map](Tutorials-space/t_spaceflow.ipynb)
   - [Spatial deconvolution with reference scRNA-seq](Tutorials-space/t_decov.ipynb)
+  - [Spatial deconvolution with RCTD](Tutorials-space/t_decov_rctd.ipynb)
   - [FlashDeconv (fast, GPU-free deconvolution)](Tutorials-space/t_flashdeconv.ipynb)
   - [Spatial deconvolution without reference scRNA-seq](Tutorials-space/t_starfysh_new.ipynb)
 - Downstream
