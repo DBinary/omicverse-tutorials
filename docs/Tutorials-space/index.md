@@ -27,6 +27,7 @@ See [`cluster/index.md`](cluster/index.md) for the full overview, recommendation
 
 - [Identifying Pseudo-Spatial Map](t_spaceflow.ipynb)
 - [Spatial deconvolution with reference scRNA-seq](t_decov.ipynb)
+- [Spatial deconvolution with RCTD](t_decov_rctd.ipynb)
 - [FlashDeconv (fast, GPU-free deconvolution)](t_flashdeconv.ipynb)
 - [Spatial deconvolution without reference scRNA-seq](t_starfysh_new.ipynb)
 
