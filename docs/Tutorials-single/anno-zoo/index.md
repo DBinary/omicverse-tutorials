@@ -6,11 +6,15 @@ low-level entry point directly rather than going through
 beyond what the unified `Annotation.annotate(method=...)` interface
 exposes, or when comparing how each backend behaves on the same input.
 
-- [SCSA — marker-based annotation](t_cellanno.ipynb)
-- [GPT-cell-type — LLM annotation from top markers](t_gptanno.ipynb)
-- [MetaTiME — tumor microenvironment meta-components](t_metatime.ipynb)
-- [scMulan — single-cell foundation model](t_scmulan.ipynb)
-- [TOSICA — transformer-based reference-supervised classifier](t_tosica.ipynb)
+```{toctree}
+:maxdepth: 1
+
+t_cellanno
+t_gptanno
+t_metatime
+t_scmulan
+t_tosica
+```
 
 For the recommended, unified workflows that combine these methods, see:
 
