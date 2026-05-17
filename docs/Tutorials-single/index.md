@@ -27,7 +27,7 @@ This page mirrors the `Single` section in `mkdocs.yml`.
 - [Celltype auto annotation with MetaTiME](t_metatime.ipynb)
 - [Celltype annotation migration(mapping) with TOSICA](t_tosica.ipynb)
 - [Celltype auto annotation with scMulan](t_scmulan.ipynb)
-- [Consensus annotation with CellVote](t_cellvote.md)
+- [Consensus annotation with CellVote](t_cellvote.ipynb)
 
 ## Trajectory
 
