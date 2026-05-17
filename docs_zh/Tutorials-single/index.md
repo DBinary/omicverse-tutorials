@@ -20,13 +20,9 @@
 
 - [无参考自动单细胞细胞类型注释](t_anno_noref.ipynb)
 - [参考自动单细胞细胞类型注释](t_anno_ref.ipynb)
-- [使用 GPT/其他的自动细胞类型注释](t_gptanno.ipynb)
-- [将细胞名称映射到细胞本体](t_cellmatch.ipynb)
-- [使用 SCSA 的细胞类型自动注释](t_cellanno.ipynb)
-- [使用 MetaTiME 的细胞类型自动注释](t_metatime.ipynb)
-- [使用 TOSICA 的细胞类型注释迁移（映射）](t_tosica.ipynb)
-- [使用 scMulan 的细胞类型自动注释](t_scmulan.ipynb)
 - [使用 CellVote 的共识注释](t_cellvote.ipynb)
+- [将细胞名称映射到细胞本体](t_cellmatch.ipynb)
+- [**单独的注释方法** › SCSA · GPT-cell-type · MetaTiME · scMulan · TOSICA](anno-zoo/index.md)
 
 ## 轨迹
 

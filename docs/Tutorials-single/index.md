@@ -21,13 +21,9 @@ This page mirrors the `Single` section in `mkdocs.yml`.
 
 - [Reference-free automated single-cell cell type annotation](t_anno_noref.ipynb)
 - [Reference automated single-cell cell type annotation](t_anno_ref.ipynb)
-- [Automatic cell type annotation with GPT/Other](t_gptanno.ipynb)
-- [Mapping Cell Names to the Cell Ontology](t_cellmatch.ipynb)
-- [Celltype auto annotation with SCSA](t_cellanno.ipynb)
-- [Celltype auto annotation with MetaTiME](t_metatime.ipynb)
-- [Celltype annotation migration(mapping) with TOSICA](t_tosica.ipynb)
-- [Celltype auto annotation with scMulan](t_scmulan.ipynb)
 - [Consensus annotation with CellVote](t_cellvote.ipynb)
+- [Mapping Cell Names to the Cell Ontology](t_cellmatch.ipynb)
+- [**Individual methods** › SCSA · GPT-cell-type · MetaTiME · scMulan · TOSICA](anno-zoo/index.md)
 
 ## Trajectory
 
