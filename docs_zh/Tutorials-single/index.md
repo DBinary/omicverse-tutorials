@@ -26,7 +26,7 @@
 - [使用 MetaTiME 的细胞类型自动注释](t_metatime.ipynb)
 - [使用 TOSICA 的细胞类型注释迁移（映射）](t_tosica.ipynb)
 - [使用 scMulan 的细胞类型自动注释](t_scmulan.ipynb)
-- [使用 CellVote 的共识注释](t_cellvote.md)
+- [使用 CellVote 的共识注释](t_cellvote.ipynb)
 
 ## 轨迹
 
