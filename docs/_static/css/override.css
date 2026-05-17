@@ -2,6 +2,107 @@
    (base theme + code/admonition/card/table styling live in custom.css;
     this file only covers niche notebook-output rules.) */
 
+:root {
+    --ov-output-bg: #f7faf8;
+    --ov-output-border: #b9d2c7;
+    --ov-output-text: #25312b;
+    --ov-output-muted: #5f756a;
+    --ov-output-stderr-bg: #fff7ed;
+    --ov-output-stderr-border: #d97706;
+}
+
+html[data-theme="dark"] {
+    --ov-output-bg: #0b1310;
+    --ov-output-border: #4f806c;
+    --ov-output-text: #cfdad3;
+    --ov-output-muted: #8fa79b;
+    --ov-output-stderr-bg: rgba(217, 119, 6, 0.12);
+    --ov-output-stderr-border: #d97706;
+}
+
+/* ------------------------------------------------------------------ */
+/* Notebook output: text streams                                       */
+/* ------------------------------------------------------------------ */
+
+.cell_output .output.stream,
+.cell_output .output.text_plain,
+.cell_output .output.highlight-myst-ansi,
+.cell_output div[class*="highlight-myst-ansi"] {
+    position: relative;
+    margin: 0.45rem 0 1rem;
+    padding: 1.45rem 0.9rem 0.75rem;
+    max-height: 360px;
+    max-width: 100%;
+    overflow: auto;
+    background: var(--ov-output-bg) !important;
+    color: var(--ov-output-text) !important;
+    border: none !important;
+    border-radius: 0;
+    box-shadow: none !important;
+}
+
+.cell_output .output.stream::before,
+.cell_output .output.text_plain::before,
+.cell_output .output.highlight-myst-ansi::before,
+.cell_output div[class*="highlight-myst-ansi"]::before {
+    content: "Output";
+    position: absolute;
+    top: 0.38rem;
+    left: 0.75rem;
+    color: var(--ov-output-muted);
+    font-family: var(--pst-font-family-base, sans-serif);
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.cell_output .output.stream.stderr,
+.cell_output .output.stderr,
+.cell_output .stderr {
+    background: var(--ov-output-stderr-bg) !important;
+}
+
+.cell_output .output.stream.stderr::before,
+.cell_output .output.stderr::before,
+.cell_output .stderr::before {
+    content: "Stderr";
+}
+
+.cell_output .output.stream pre,
+.cell_output .output.text_plain pre,
+.cell_output .output.highlight-myst-ansi pre,
+.cell_output div[class*="highlight-myst-ansi"] pre {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: var(--ov-output-bg) !important;
+    color: inherit !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    font-size: 0.82rem !important;
+    line-height: 1.45 !important;
+    white-space: pre !important;
+}
+
+.cell_output .output.stream .highlight,
+.cell_output .output.text_plain .highlight,
+.cell_output .output.highlight-myst-ansi .highlight,
+.cell_output div[class*="highlight-myst-ansi"] .highlight {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: var(--ov-output-bg) !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+.cell_output .output button.copybtn,
+.cell_output div[class*="highlight-myst-ansi"] button.copybtn {
+    display: none !important;
+}
+
 /* ------------------------------------------------------------------ */
 /* Notebook output: scrollable DataFrame tables                        */
 /* ------------------------------------------------------------------ */
@@ -53,4 +154,19 @@ table.dataframe thead th {
     max-width: 100% !important;
     height: auto !important;
     display: block;
+    margin: 0.75rem 0 1.25rem;
+}
+
+.cell_output svg,
+.cell_output .plotly-graph-div,
+.cell_output .bk-root,
+.cell_output .widget-subarea {
+    max-width: 100% !important;
+}
+
+.cell_output .output.text_html,
+.cell_output .output.display_data,
+.cell_output .output.execute_result {
+    max-height: none;
+    overflow-x: auto;
 }
