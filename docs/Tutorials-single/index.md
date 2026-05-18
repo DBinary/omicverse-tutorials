@@ -47,6 +47,11 @@ This page mirrors the `Single` section in `mkdocs.yml`.
 - [Drug response predict with scDrug](t_scdrug.ipynb)
 - [Batch Correction with SIMBA](t_simba.ipynb)
 
+## Copy-Number Variation
+
+- [Single-cell CNV with CopyKAT](t_copykat.ipynb)
+- [Single-cell CNV with inferCNV](t_infercnv.ipynb)
+
 ## Enrichment
 
 - [Pathway analysis with AUCell](t_aucell.ipynb)
