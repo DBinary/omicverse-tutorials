@@ -62,9 +62,17 @@
 ../Tutorials-single/t_deg_single
 ../Tutorials-single/t_scdeg
 ../Tutorials-single/t_scenic
-../Tutorials-single/t_aucell
 ../Tutorials-single/t_scdrug
 ../Tutorials-single/t_simba
+```
+
+## 富集分析
+
+```{toctree}
+:maxdepth: 1
+
+../Tutorials-single/t_aucell
+../Tutorials-single/enrichment/t_es_compare
 ```
 
 ## 细胞-细胞通讯
