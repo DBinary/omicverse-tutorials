@@ -66,6 +66,15 @@
 ../Tutorials-single/t_simba
 ```
 
+## 拷贝数变异
+
+```{toctree}
+:maxdepth: 1
+
+../Tutorials-single/t_copykat
+../Tutorials-single/t_infercnv
+```
+
 ## 富集分析
 
 ```{toctree}

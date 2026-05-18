@@ -46,6 +46,11 @@
 - [使用 scDrug 预测药物反应](t_scdrug.ipynb)
 - [使用 SIMBA 的批次纠正](t_simba.ipynb)
 
+## 拷贝数变异
+
+- [使用 CopyKAT 推断单细胞拷贝数变异](t_copykat.ipynb)
+- [使用 inferCNV 推断单细胞拷贝数变异](t_infercnv.ipynb)
+
 ## 富集分析
 
 - [使用 AUCell 的通路分析](t_aucell.ipynb)
