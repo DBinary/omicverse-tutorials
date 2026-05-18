@@ -44,9 +44,13 @@ This page mirrors the `Single` section in `mkdocs.yml`.
 - [Differential expression and celltype analysis [All Cell]](t_deg_single.ipynb)
 - [Differential expression analysis [Meta Cell]](t_scdeg.ipynb)
 - [Gene Regulatory Network Analysis with SCENIC](t_scenic.ipynb)
-- [Pathway analysis with AUCell](t_aucell.ipynb)
 - [Drug response predict with scDrug](t_scdrug.ipynb)
 - [Batch Correction with SIMBA](t_simba.ipynb)
+
+## Enrichment
+
+- [Pathway analysis with AUCell](t_aucell.ipynb)
+- [Comparing enrichment-score methods on scRNA-seq](enrichment/t_es_compare.ipynb)
 
 ## Cell-Cell Communication
 

@@ -43,9 +43,13 @@
 - [差异表达和细胞类型分析 [所有细胞]](t_deg_single.ipynb)
 - [差异表达分析 [元细胞]](t_scdeg.ipynb)
 - [使用 SCENIC 的基因调控网络分析](t_scenic.ipynb)
-- [使用 AUCell 的通路分析](t_aucell.ipynb)
 - [使用 scDrug 预测药物反应](t_scdrug.ipynb)
 - [使用 SIMBA 的批次纠正](t_simba.ipynb)
+
+## 富集分析
+
+- [使用 AUCell 的通路分析](t_aucell.ipynb)
+- [scRNA-seq 上多种富集打分方法的横向对比](enrichment/t_es_compare.ipynb)
 
 ## 细胞-细胞通讯
 
