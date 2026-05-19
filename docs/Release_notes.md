@@ -1081,26 +1081,27 @@ A new top-level enrichment-scoring namespace, vendoring the decoupler 1.x algori
 - Method dispatch lifted into each method (no `MethodMeta` facade); decoupler's `_docs` / `_log` infrastructure stripped.
 - Legacy `ov.single.aucell` helpers still work but print a migration notice to `ov.es.aucell`.
 - pytest smoke coverage for all 11 scoring methods.
+- **Tutorial**: [t_es_compare](Tutorials-single/enrichment/t_es_compare.ipynb) — side-by-side comparison of all 11 enrichment methods on the same matrix.
 
 ### Single-cell analysis
 
-- **`ov.single.NMF` — Rust-backed fast NMF (PR #717)** via `nmf-rs`. Auto-K selection via stability-drop heuristic and Brunet K-selection with a consensus heatmap; consensus switched from cell-level to spectra-level for stability. Adds per-factor `obs` columns and drops empty categories cleanly.
-- **`ov.single.CNV` + `ov.pl.cnv_*` (PR #723)** — single-cell CNV inference covering both copykat and infercnv backends. Plotting uses a **marsilea backend** for `cnv_heatmap` with multi-strip annotations; split between `groupby` (ordering) and `annotations` (overlay) for layering. Tutorials added: `t_copykat`, `t_infercnv`.
+- **`ov.single.NMF` — Rust-backed fast NMF (PR #717)** via `nmf-rs`. Auto-K selection via stability-drop heuristic and Brunet K-selection with a consensus heatmap; consensus switched from cell-level to spectra-level for stability. Adds per-factor `obs` columns and drops empty categories cleanly. *Tutorial:* uses the cNMF workflow ([t_cnmf](Tutorials-single/t_cnmf.ipynb)) as its reference pipeline.
+- **`ov.single.CNV` + `ov.pl.cnv_*` (PR #723)** — single-cell CNV inference covering both copykat and infercnv backends. Plotting uses a **marsilea backend** for `cnv_heatmap` with multi-strip annotations; split between `groupby` (ordering) and `annotations` (overlay) for layering. *Tutorials:* [t_copykat](Tutorials-single/t_copykat.ipynb), [t_infercnv](Tutorials-single/t_infercnv.ipynb).
 - **`ov.single.Annotation` — scMulan / MetaTiME / TOSICA backends (PRs #719, #720)**:
-  - scMulan added to `Annotation.annotate` (modern transformers compat).
-  - MetaTiME and TOSICA wired into the same dispatcher.
-  - **CellVote consensus score** — confidence-aware multi-annotator consensus (PR #719).
-- **`ov.single.batch_correction` — Seurat-style CCA (PR #670, #669)** — drop-in CCA backend alongside the existing methods; 3 review bug-fixes + UX improvements landed in the same PR (PR #670 review feedback).
-- **`ov.single.auto_resolution` — null-adjusted (PR #662)**, per Lange et al. 2004. Renamed from `autoResolution`, with a selection-curve plot helper and a new `method='champ'` backend.
-- **`ov.single.cal_grn` fix (#681)** — passes `gene_names` to `grnboost2` / `genie3` so the resulting GRN keeps the real gene labels.
-- **SCLLMManager is now the canonical foundation-model entry (PR #704)** — `ov.fm` namespace dropped entirely; SCLLM is the single FM surface. Defensive HVG warning + actionable RegDiffusion OOM error in `single/SCENIC`.
+  - scMulan added to `Annotation.annotate` (modern transformers compat) — *tutorial:* [t_scmulan](Tutorials-single/anno-zoo/t_scmulan.ipynb).
+  - MetaTiME and TOSICA wired into the same dispatcher — *tutorials:* [t_metatime](Tutorials-single/anno-zoo/t_metatime.ipynb), [t_tosica](Tutorials-single/anno-zoo/t_tosica.ipynb).
+  - **CellVote consensus score** — confidence-aware multi-annotator consensus (PR #719). *Tutorial:* [t_cellvote](Tutorials-single/t_cellvote.ipynb).
+- **`ov.single.batch_correction` — Seurat-style CCA (PR #670, #669)** — drop-in CCA backend alongside the existing methods; 3 review bug-fixes + UX improvements landed in the same PR (PR #670 review feedback). *Tutorial:* [t_single_batch](Tutorials-single/t_single_batch.ipynb).
+- **`ov.single.auto_resolution` — null-adjusted (PR #662)**, per Lange et al. 2004. Renamed from `autoResolution`, with a selection-curve plot helper and a new `method='champ'` backend. *Tutorial:* covered in [t_cluster](Tutorials-single/t_cluster.ipynb).
+- **`ov.single.cal_grn` fix (#681)** — passes `gene_names` to `grnboost2` / `genie3` so the resulting GRN keeps the real gene labels. *Tutorial:* [t_scenic](Tutorials-single/t_scenic.ipynb).
+- **SCLLMManager is now the canonical foundation-model entry (PR #704)** — `ov.fm` namespace dropped entirely; SCLLM is the single FM surface. Defensive HVG warning + actionable RegDiffusion OOM error in `single/SCENIC`. *Tutorials:* [t_scgpt](Tutorials-llm/t_scgpt.ipynb), [t_scfoundation](Tutorials-llm/t_scfoundation.ipynb), [t_cellplm](Tutorials-llm/t_cellplm.ipynb), [t_uce](Tutorials-llm/t_uce.ipynb).
 
 ### Geneformer in-silico perturbation (PRs #725, #726)
 
 - **`ov.llm` Geneformer perturbation** — in-silico knockout / knock-in via embedding shifts in the Geneformer foundation model.
 - **TF-perturbation per-gene downstream-shift analysis (PR #726)** — quantifies how each downstream gene shifts in embedding space after a TF perturbation.
 - New `ov.pl` helpers for the perturbation result tables.
-- Tutorial `t_geneformer` shipped with executed outputs.
+- **Tutorial**: [t_geneformer](Tutorials-llm/t_geneformer.ipynb) — shipped end-to-end with executed outputs.
 
 ### Preprocessing & GPU performance
 
@@ -1110,14 +1111,15 @@ A new top-level enrichment-scoring namespace, vendoring the decoupler 1.x algori
 - **Native torch t-SNE + louvain auto-redirect (PR #658)** — mixed-mode polish so the GPU path is the default when torch is available.
 - **`ov.pp.tsne`** routes directly to sklearn (drops `sc.tl.tsne`) — fixes a stale `n_components` forwarding bug (#683).
 - **`ov.pp.qc(doublets=…)` default** is now **`scdblfinder`** for CPU and mixed modes (PR #655).
-- **`ov.pp.champ` — Convex Hull of Admissible Modularity Partitions (PR #666)** — new resolution-stability backend with `n_seeds`, `modularity='cpm'`, adaptive refinement, three `width_metric` modes (`log`/`linear`/`relative`), and NaN-safe gamma clamping. Wired into `auto_resolution` as `method='champ'` with a landscape plot.
+- **`ov.pp.champ` — Convex Hull of Admissible Modularity Partitions (PR #666)** — new resolution-stability backend with `n_seeds`, `modularity='cpm'`, adaptive refinement, three `width_metric` modes (`log`/`linear`/`relative`), and NaN-safe gamma clamping. Wired into `auto_resolution` as `method='champ'` with a landscape plot. *Tutorial:* [t_cluster](Tutorials-single/t_cluster.ipynb).
+- **GPU preprocessing tutorials**: [t_preprocess_gpu](Tutorials-single/t_preprocess_gpu.ipynb) (Leiden / UMAP / KNN GPU path), [t_preprocess_cpu](Tutorials-single/t_preprocess_cpu.ipynb) (CPU baseline with the new defaults).
 
 ### Spatial omics
 
-- **`ov.space.RCTD` deconvolution backend (PR #710, issue #682)** — RCTD added alongside the existing spatial deconvolution backends. Full-slide tutorial `t_decov_rctd` with executed outputs; reference dataset shipped as `ov.datasets.visium_lymph_node`.
-- **`ov.space.nmf_tissue_zones` (PR #673)** — NMF colocation over spot abundance matrices, with `normalize='rows'` option and DataFrame-column inference. Prefers `uns` factor names and strips shared prefixes for cleaner zone labels.
-- **`ov.io.read_atera` (PR #700)** — full reader for the 10x Atera (WTA Preview) bundle (Xenium-format core + nucleus boundaries + multi-stain morphology + optional H&E + vendor `cell_groups.csv`). See the dedicated section under "I/O" below.
-- **`ov.io.read_xenium` V2 / Prime fix (PR #716, issue #708)** — Xenium V2 / Prime data ships `morphology_focus/morphology_focus_NNNN.ome.tif` per stain channel; the OME-XML cross-references between siblings made tifffile's default `_multifile=True` silently merge them and break the pyramid walk, producing `[Xenium] No morphology image loaded`. The fix walks each per-channel pyramid standalone with `_multifile=False` and prioritises the user-requested channel. Verified on Xenium Prime FFPE Human Prostate (5,006 genes / 193K cells) — all four channels now load.
+- **`ov.space.RCTD` deconvolution backend (PR #710, issue #682)** — RCTD added alongside the existing spatial deconvolution backends. Full-slide tutorial with executed outputs; reference dataset shipped as `ov.datasets.visium_lymph_node`. *Tutorial:* [t_decov_rctd](Tutorials-space/t_decov_rctd.ipynb).
+- **`ov.space.nmf_tissue_zones` (PR #673)** — NMF colocation over spot abundance matrices, with `normalize='rows'` option and DataFrame-column inference. Prefers `uns` factor names and strips shared prefixes for cleaner zone labels. *Tutorial:* [t_decov](Tutorials-space/t_decov.ipynb) Step 6.
+- **`ov.io.read_atera` (PR #700)** — full reader for the 10x Atera (WTA Preview) bundle (Xenium-format core + nucleus boundaries + multi-stain morphology + optional H&E + vendor `cell_groups.csv`). See the dedicated section under "I/O" below. *Tutorial:* [t_atera_preprocess](Tutorials-space/t_atera_preprocess.ipynb).
+- **`ov.io.read_xenium` V2 / Prime fix (PR #716, issue #708)** — Xenium V2 / Prime data ships `morphology_focus/morphology_focus_NNNN.ome.tif` per stain channel; the OME-XML cross-references between siblings made tifffile's default `_multifile=True` silently merge them and break the pyramid walk, producing `[Xenium] No morphology image loaded`. The fix walks each per-channel pyramid standalone with `_multifile=False` and prioritises the user-requested channel. Verified on Xenium Prime FFPE Human Prostate (5,006 genes / 193K cells) — all four channels now load. *Tutorial:* [t_xenium_preprocess](Tutorials-space/t_xenium_preprocess.ipynb).
 - New helpers extracted from the Atera tutorial — `ov.pl.to_rgb_grayscale`, `ov.pl.sync_categorical_palette`, `ov.space.subset_window`.
 - **`ov.pl.spatial`** — `frameon=False` now truly hides the frame (matches scanpy).
 
@@ -1125,30 +1127,32 @@ A new top-level enrichment-scoring namespace, vendoring the decoupler 1.x algori
 
 #### `ov.micro` — paired microbe ↔ metabolite + meta-analysis
 
-- **Paired microbe↔metabolite integration (PR #664)** — new `simulate_paired`, `paired_spearman`, `paired_cca`, and **MMvec** for unpaired co-occurrence inference, with companion plotting helpers.
-- **Cross-cohort 16S meta-analysis (PR #663)** — `combine_studies` + `meta_da` for proper between-study differential abundance, handling per-study confounders.
+- **Paired microbe↔metabolite integration (PR #664)** — new `simulate_paired`, `paired_spearman`, `paired_cca`, and **MMvec** for unpaired co-occurrence inference, with companion plotting helpers. *Tutorial:* [t_micro_metabol_paired](Tutorials-Multi-Omics/micro-meta/t_micro_metabol_paired.ipynb).
+- **Cross-cohort 16S meta-analysis (PR #663)** — `combine_studies` + `meta_da` for proper between-study differential abundance, handling per-study confounders. *Tutorials:* [t_16s_meta_analysis](Tutorials-microbiome/t_16s_meta_analysis.ipynb), [t_16s_da_comparison](Tutorials-microbiome/t_16s_da_comparison.ipynb).
 - **`fetch_franzosa_ibd_2019` (PR #664)** — first built-in real paired multi-omics dataset; the paired tutorial was rewritten end-to-end against it.
 
 #### `ov.metabol` — MTBLS1 case study (PRs #665)
 
 - **MTBLS1 case-study helpers + 4 plot helpers** for the MetaboLights MTBLS1 benchmark.
 - **v0.5 perf/usability fixes** discovered during the MTBLS1 smoke-test rollout.
+- **Tutorial**: [t_metabol_11_real_data_mtbls1](Tutorials-metabol/t_metabol_11_real_data_mtbls1.ipynb).
 
 ### `ov.report` — one-call HTML pipeline report from AnnData provenance (PRs #659, #660)
 
 - **`ov.report` — one-call HTML pipeline report** generated from AnnData provenance.
 - **`@tracked` decorator** consolidates timing / nesting / record-call concerns into a single annotation.
 - Extends to **`ov.single.batch_correction`, `ov.single.Annotation`, `ov.single.AnnotationRef`** (PR #660) — class-method tracking, not just function tracking.
+- **Developer guide**: see the *"Making a dispatcher appear in `ov.report.from_anndata`"* section of [Developer_guild](Developer_guild.md) for how to wire your own dispatcher into the report.
 
 ### Plotting
 
-- **`ov.pl.plot1cell` — circular UMAP with concentric metadata tracks (PRs #674, #675, #676, #679)**: new circular embedding plot with `bending.inside` labels, axis ticks, per-track palettes, and **horizontal outer-ring labels with wrap + repel**. Respects `plot_set` background (no hardcoded figure background). Registered in Sphinx toctrees with a 4-scale tutorial slimmed to 2 real datasets.
+- **`ov.pl.plot1cell` — circular UMAP with concentric metadata tracks (PRs #674, #675, #676, #679)**: new circular embedding plot with `bending.inside` labels, axis ticks, per-track palettes, and **horizontal outer-ring labels with wrap + repel**. Respects `plot_set` background (no hardcoded figure background). Registered in Sphinx toctrees with a 4-scale tutorial slimmed to 2 real datasets. *Tutorial:* [t_plot1cell](Tutorials-plotting/t_plot1cell.ipynb).
 - **`ov.pl.embedding` flow layout (PR #719)** — flow layout is now the **default** for multi-panel embedding plots (replaces the grid layout). Multiple polish fixes:
   - Flow layout accounts for default colorbar + title in panel footprint.
   - Colorbar width halved (fraction 0.08 → 0.04); slim inset colorbar default that reclaims unused figure width.
   - `_flow_layout_panels` measures axis & colorbar tightbboxes so layout is colorbar-aware.
   - `inset_axes` colorbar registered so flow layout measures its tightbbox correctly.
-- **`ov.pl.ccc_*` — unified communication adapters for LIANA and CellPhoneDB (PR #666 area)** — single adapter layer so `ccc_circle`, `ccc_heatmap`, `ccc_network_plot`, `ccc_stat_plot` work against either source. Empty-interaction palettes guarded. Volcano fix (#712) for non-standard significance column values.
+- **`ov.pl.ccc_*` — unified communication adapters for LIANA and CellPhoneDB (PR #666 area)** — single adapter layer so `ccc_circle`, `ccc_heatmap`, `ccc_network_plot`, `ccc_stat_plot` work against either source. Empty-interaction palettes guarded. Volcano fix (#712) for non-standard significance column values. *Tutorials:* [t_ccc_cellphonedb](Tutorials-single/t_ccc_cellphonedb.ipynb), [t_ccc_liana](Tutorials-single/t_ccc_liana.ipynb).
 - **`ov.pl.trajectory` (PR #707)** — generic trajectory plotting backend with a robust label assertion in tests.
 - **`ov.pl.cnv_*`** — see `ov.single.CNV` above for the marsilea backend.
 - **Dynamic heatmap fixes** — preserve explicit `feature_labels`; preserve dynamic annotations through layout.
@@ -1162,12 +1166,13 @@ A new top-level enrichment-scoring namespace, vendoring the decoupler 1.x algori
   - Optional vendor `cell_groups.csv` merge → `obs['cell_group']` and `obs['cell_group_color']`, NaN-preserving for cells absent from the CSV.
   - Optional H&E OME-TIFF + 3×3 affine CSV → `uns['spatial'][lib]['images']['he']` and `scalefactors['he_affine']` / `'he_downsample'`.
   - Verified on the public `WTA_Preview_FFPE_Breast_Cancer` sample (170,057 cells × 18,028 genes after dropping 9,076 control probes / codewords).
+  - *Tutorial*: [t_atera_preprocess](Tutorials-space/t_atera_preprocess.ipynb).
 - **`ov.io.read_csv` (latest)** — now flags pandas's silent duplicate-column rename (`col`, `col.1`, `col.2`, …) instead of letting it pass through unnoticed.
 - **`ov.io.read_xenium` V2 / Prime fix** — see Spatial.
 
 ### Datasets & utilities
 
-- **`ov.datasets.visium_lymph_node`** loader — first-class reference dataset for the RCTD tutorial.
+- **`ov.datasets.visium_lymph_node`** loader — first-class reference dataset for the [RCTD tutorial](Tutorials-space/t_decov_rctd.ipynb).
 - **`ov.utils.preflight_alignment` (latest)** — sample-metadata alignment pre-flight helper; checks that the `obs` table you're about to merge will actually align with the AnnData index before you do it. Registered with the function registry.
 - **`ov.bulk` — `pyWGCNA` / `readWGCNA` registry-discoverable shim (PR #700)** so the WGCNA path is discoverable from `ov.Agent` without importing the heavy backend at top level.
 
