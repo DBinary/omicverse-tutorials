@@ -1053,3 +1053,152 @@ End-to-end **16S rRNA amplicon → microbiome AnnData** pipeline.
 - Legacy ReadTheDocs MkDocs config.
 - Three shipped metabolomics data files (KEGG / LION / HMDB pathway subsets) — now fetched on demand.
 
+## v 2.1.3
+
+### Scope
+- Summarises every change between `v2.1.2` and the `2.1.3rc1` dev tip: **207 commits**, **212 files changed**, **+34,878 / −8,888 lines**, ~50 merged PRs (#652 → #726).
+- Three top-level themes drove this release:
+  1. **New analysis modules** — `ov.es` (vendored decoupler kernels with GPU acceleration), `ov.single.NMF` (Rust-backed), `ov.single.CNV` (copykat / infercnv), Geneformer in-silico perturbation, `ov.pp.champ`, `ov.report` (one-call HTML provenance report), `ov.space.RCTD`, `ov.space.nmf_tissue_zones`.
+  2. **GPU-first preprocessing** — pure-PyTorch Leiden (74×), full-GPU parametric UMAP (21×), GPU KNN by default in `pp.neighbors`, native torch t-SNE, plus a ~20-method GPU sweep in `ov.es` (gsva 23–28×, mdt/udt 83–158×, viper 20×, gsea 13–16×, ora 48×).
+  3. **Maturation of v2.1.x modules** — Atera (WTA Preview) reader, Xenium V2 / Prime morphology fix, paired microbe↔metabolite + cross-cohort 16S meta-analysis in `ov.micro`, MTBLS1 case study + plot helpers in `ov.metabol`, Seurat-style CCA in `single.batch_correction`, scMulan / MetaTiME / TOSICA in `single.Annotation`, CellVote consensus.
+
+---
+
+### `ov.es` — vendored decoupler kernels with GPU acceleration (PR #722)
+
+A new top-level enrichment-scoring namespace, vendoring the decoupler 1.x algorithms behind a clean `omicverse` API and rewriting every method with an optional torch/GPU kernel.
+
+- **`ov.es.decoupler` unified dispatcher** registered with `@register_function` — single entry point that picks the right backend by method name.
+- **GPU kernels for 10 methods**: `aucell`, `ulm`, `zscore`, `mlm`, `waggr` (first wave), then `gsea`, `ora`, `gsva`, `viper`, `mdt`/`udt`. Speedups vs the CPU decoupler reference, on the same matrix:
+  - `aucell`: 0.2× → 7.5× after kernel redesign (bit-exact vs CPU).
+  - `gsea`: 13–16× via batched cumsum ES.
+  - `ora`: 48× via batched hypergeom on torch.
+  - `gsva`: 23–28× across the three pipeline stages.
+  - `mdt` / `udt`: 83× / 158× via pure-torch GBDT, dropping the xgboost CPU path.
+  - `viper`: 20× on aREA, 4× full pipeline.
+- **GPU-side sparse densify** (2–3× across the board), math approximations + loop vectorisation, and GPU memory pattern aligned with `ov.pp._pca` (drops per-call cleanup overhead).
+- `waggr` GPU dispatcher densifies before CPU fallback to avoid hidden round-trips.
+- Method dispatch lifted into each method (no `MethodMeta` facade); decoupler's `_docs` / `_log` infrastructure stripped.
+- Legacy `ov.single.aucell` helpers still work but print a migration notice to `ov.es.aucell`.
+- pytest smoke coverage for all 11 scoring methods.
+
+### Single-cell analysis
+
+- **`ov.single.NMF` — Rust-backed fast NMF (PR #717)** via `nmf-rs`. Auto-K selection via stability-drop heuristic and Brunet K-selection with a consensus heatmap; consensus switched from cell-level to spectra-level for stability. Adds per-factor `obs` columns and drops empty categories cleanly.
+- **`ov.single.CNV` + `ov.pl.cnv_*` (PR #723)** — single-cell CNV inference covering both copykat and infercnv backends. Plotting uses a **marsilea backend** for `cnv_heatmap` with multi-strip annotations; split between `groupby` (ordering) and `annotations` (overlay) for layering. Tutorials added: `t_copykat`, `t_infercnv`.
+- **`ov.single.Annotation` — scMulan / MetaTiME / TOSICA backends (PRs #719, #720)**:
+  - scMulan added to `Annotation.annotate` (modern transformers compat).
+  - MetaTiME and TOSICA wired into the same dispatcher.
+  - **CellVote consensus score** — confidence-aware multi-annotator consensus (PR #719).
+- **`ov.single.batch_correction` — Seurat-style CCA (PR #670, #669)** — drop-in CCA backend alongside the existing methods; 3 review bug-fixes + UX improvements landed in the same PR (PR #670 review feedback).
+- **`ov.single.auto_resolution` — null-adjusted (PR #662)**, per Lange et al. 2004. Renamed from `autoResolution`, with a selection-curve plot helper and a new `method='champ'` backend.
+- **`ov.single.cal_grn` fix (#681)** — passes `gene_names` to `grnboost2` / `genie3` so the resulting GRN keeps the real gene labels.
+- **SCLLMManager is now the canonical foundation-model entry (PR #704)** — `ov.fm` namespace dropped entirely; SCLLM is the single FM surface. Defensive HVG warning + actionable RegDiffusion OOM error in `single/SCENIC`.
+
+### Geneformer in-silico perturbation (PRs #725, #726)
+
+- **`ov.llm` Geneformer perturbation** — in-silico knockout / knock-in via embedding shifts in the Geneformer foundation model.
+- **TF-perturbation per-gene downstream-shift analysis (PR #726)** — quantifies how each downstream gene shifts in embedding space after a TF perturbation.
+- New `ov.pl` helpers for the perturbation result tables.
+- Tutorial `t_geneformer` shipped with executed outputs.
+
+### Preprocessing & GPU performance
+
+- **Pure-torch GPU Leiden (PR #657)** — `ov.pp.leiden(method='torch')` is **74× faster** than the CPU reference and has **no `torch_sparse` / `torch_scatter` dependency** (one of the most fragile installs in the stack). Pure tensor ops only.
+- **Full-GPU parametric UMAP (PR #652)** — pumap path is **21× faster** with bounded VRAM; batch size bumped to 16384 across the board.
+- **GPU KNN by default for `method='torch'` (PR #654)** in `ov.pp.neighbors`, with the correct fuzzy simplicial graph (matches the UMAP reference, not an approximation).
+- **Native torch t-SNE + louvain auto-redirect (PR #658)** — mixed-mode polish so the GPU path is the default when torch is available.
+- **`ov.pp.tsne`** routes directly to sklearn (drops `sc.tl.tsne`) — fixes a stale `n_components` forwarding bug (#683).
+- **`ov.pp.qc(doublets=…)` default** is now **`scdblfinder`** for CPU and mixed modes (PR #655).
+- **`ov.pp.champ` — Convex Hull of Admissible Modularity Partitions (PR #666)** — new resolution-stability backend with `n_seeds`, `modularity='cpm'`, adaptive refinement, three `width_metric` modes (`log`/`linear`/`relative`), and NaN-safe gamma clamping. Wired into `auto_resolution` as `method='champ'` with a landscape plot.
+
+### Spatial omics
+
+- **`ov.space.RCTD` deconvolution backend (PR #710, issue #682)** — RCTD added alongside the existing spatial deconvolution backends. Full-slide tutorial `t_decov_rctd` with executed outputs; reference dataset shipped as `ov.datasets.visium_lymph_node`.
+- **`ov.space.nmf_tissue_zones` (PR #673)** — NMF colocation over spot abundance matrices, with `normalize='rows'` option and DataFrame-column inference. Prefers `uns` factor names and strips shared prefixes for cleaner zone labels.
+- **`ov.io.read_atera` (PR #700)** — full reader for the 10x Atera (WTA Preview) bundle (Xenium-format core + nucleus boundaries + multi-stain morphology + optional H&E + vendor `cell_groups.csv`). See the dedicated section under "I/O" below.
+- **`ov.io.read_xenium` V2 / Prime fix (PR #716, issue #708)** — Xenium V2 / Prime data ships `morphology_focus/morphology_focus_NNNN.ome.tif` per stain channel; the OME-XML cross-references between siblings made tifffile's default `_multifile=True` silently merge them and break the pyramid walk, producing `[Xenium] No morphology image loaded`. The fix walks each per-channel pyramid standalone with `_multifile=False` and prioritises the user-requested channel. Verified on Xenium Prime FFPE Human Prostate (5,006 genes / 193K cells) — all four channels now load.
+- New helpers extracted from the Atera tutorial — `ov.pl.to_rgb_grayscale`, `ov.pl.sync_categorical_palette`, `ov.space.subset_window`.
+- **`ov.pl.spatial`** — `frameon=False` now truly hides the frame (matches scanpy).
+
+### Microbiome & Metabolomics
+
+#### `ov.micro` — paired microbe ↔ metabolite + meta-analysis
+
+- **Paired microbe↔metabolite integration (PR #664)** — new `simulate_paired`, `paired_spearman`, `paired_cca`, and **MMvec** for unpaired co-occurrence inference, with companion plotting helpers.
+- **Cross-cohort 16S meta-analysis (PR #663)** — `combine_studies` + `meta_da` for proper between-study differential abundance, handling per-study confounders.
+- **`fetch_franzosa_ibd_2019` (PR #664)** — first built-in real paired multi-omics dataset; the paired tutorial was rewritten end-to-end against it.
+
+#### `ov.metabol` — MTBLS1 case study (PRs #665)
+
+- **MTBLS1 case-study helpers + 4 plot helpers** for the MetaboLights MTBLS1 benchmark.
+- **v0.5 perf/usability fixes** discovered during the MTBLS1 smoke-test rollout.
+
+### `ov.report` — one-call HTML pipeline report from AnnData provenance (PRs #659, #660)
+
+- **`ov.report` — one-call HTML pipeline report** generated from AnnData provenance.
+- **`@tracked` decorator** consolidates timing / nesting / record-call concerns into a single annotation.
+- Extends to **`ov.single.batch_correction`, `ov.single.Annotation`, `ov.single.AnnotationRef`** (PR #660) — class-method tracking, not just function tracking.
+
+### Plotting
+
+- **`ov.pl.plot1cell` — circular UMAP with concentric metadata tracks (PRs #674, #675, #676, #679)**: new circular embedding plot with `bending.inside` labels, axis ticks, per-track palettes, and **horizontal outer-ring labels with wrap + repel**. Respects `plot_set` background (no hardcoded figure background). Registered in Sphinx toctrees with a 4-scale tutorial slimmed to 2 real datasets.
+- **`ov.pl.embedding` flow layout (PR #719)** — flow layout is now the **default** for multi-panel embedding plots (replaces the grid layout). Multiple polish fixes:
+  - Flow layout accounts for default colorbar + title in panel footprint.
+  - Colorbar width halved (fraction 0.08 → 0.04); slim inset colorbar default that reclaims unused figure width.
+  - `_flow_layout_panels` measures axis & colorbar tightbboxes so layout is colorbar-aware.
+  - `inset_axes` colorbar registered so flow layout measures its tightbbox correctly.
+- **`ov.pl.ccc_*` — unified communication adapters for LIANA and CellPhoneDB (PR #666 area)** — single adapter layer so `ccc_circle`, `ccc_heatmap`, `ccc_network_plot`, `ccc_stat_plot` work against either source. Empty-interaction palettes guarded. Volcano fix (#712) for non-standard significance column values.
+- **`ov.pl.trajectory` (PR #707)** — generic trajectory plotting backend with a robust label assertion in tests.
+- **`ov.pl.cnv_*`** — see `ov.single.CNV` above for the marsilea backend.
+- **Dynamic heatmap fixes** — preserve explicit `feature_labels`; preserve dynamic annotations through layout.
+- **WGCNA color assignment refactor (PR #684)** — community contribution from @libmelo.
+
+### I/O
+
+- **`ov.io.read_atera` (PR #700)** — full reader for 10x Atera (WTA Preview) `outs/`. Atera ships a Xenium-format core (`cell_feature_matrix.h5`, `cells.parquet`, `cell_boundaries.parquet`, `experiment.xenium`) plus four Atera-only additions, all handled by the reader:
+  - `nucleus_boundaries.parquet` → `obs['nucleus_geometry']` (WKT POLYGON).
+  - `morphology_focus/ch####_<tag>.ome.tif` — content-named multi-stain pyramid TIFFs. Channel selector accepts a semantic tag (`'dapi'` / `'boundary'` / `'rna'` / `'stroma'`), a filename substring (`'cd45'`, `'18s'`), or an integer-as-string index. tifffile's OME multi-file series is bypassed (`is_ome=False`) so each channel's pyramid IFDs are walked standalone.
+  - Optional vendor `cell_groups.csv` merge → `obs['cell_group']` and `obs['cell_group_color']`, NaN-preserving for cells absent from the CSV.
+  - Optional H&E OME-TIFF + 3×3 affine CSV → `uns['spatial'][lib]['images']['he']` and `scalefactors['he_affine']` / `'he_downsample'`.
+  - Verified on the public `WTA_Preview_FFPE_Breast_Cancer` sample (170,057 cells × 18,028 genes after dropping 9,076 control probes / codewords).
+- **`ov.io.read_csv` (latest)** — now flags pandas's silent duplicate-column rename (`col`, `col.1`, `col.2`, …) instead of letting it pass through unnoticed.
+- **`ov.io.read_xenium` V2 / Prime fix** — see Spatial.
+
+### Datasets & utilities
+
+- **`ov.datasets.visium_lymph_node`** loader — first-class reference dataset for the RCTD tutorial.
+- **`ov.utils.preflight_alignment` (latest)** — sample-metadata alignment pre-flight helper; checks that the `obs` table you're about to merge will actually align with the AnnData index before you do it. Registered with the function registry.
+- **`ov.bulk` — `pyWGCNA` / `readWGCNA` registry-discoverable shim (PR #700)** so the WGCNA path is discoverable from `ov.Agent` without importing the heavy backend at top level.
+
+### OVAgent / Jarvis / registry
+
+- **`registry_lookup` improvements (PR #691)**:
+  - Shows docstrings + visual dividers in `registry_lookup` output (was a bare table before).
+  - `_registry` includes keyword-only args in AST-derived signatures (was previously dropping them).
+  - Caches `RegistryScanner` + skill registry across calls (perf win on long agent sessions).
+- **`@register_function` backfill on docstring-backfilled APIs (PR #695)** — every metabol / micro / single API whose docstring was filled in from omicverse-skills 0.3.0 grounding is now registry-discoverable.
+- **OVAgent resilience + live LLM trace + auto-download (PR #688)** — better recovery on transient backend failures, live trace of the LLM call as it streams, and auto-download of small dependencies on first use.
+- **Hardcoded user-specific paths removed (PR #689)** — `possible_paths` fallback lists deleted in favour of explicit configuration.
+- **`omicverse-skills` bumped to >=0.3.0 (PR #696)** to pick up the v0.3 docstring corpus.
+
+### Bug fixes
+
+- **#706** — `ov.pp.preprocess(mode='shiftlog|seurat')` no longer raises `UnboundLocalError` (PR #709).
+- **#683** — `ov.pp.tsne` no longer forwards `n_components` to the scanpy backend (PR #698).
+- **#685** — bulk/single enrichment `logp` now matches the `−log10` colour-bar label (PR #697).
+- **#681** — SCENIC `cal_grn` passes `gene_names` to `grnboost2` / `genie3` (PR #699).
+- **#708** — Xenium V2 / Prime `morphology_focus_NNNN.ome.tif` channels load correctly (PR #716).
+- **#612** — `bulk2single/bayesprism`: `ThetaPost` columns are cell types, not genes (PR #672).
+- **#712** — volcano misclassifies significant genes when `sig` column uses non-standard values (community PR).
+- **bulk2single TAPE (PR #724)** — high-res mode now exposes signature matrices via `self.signature_matrix`.
+- **CCC circle (latest)** — circle aggregation now aligns with significant interactions (community PR #715).
+- **MOFA** — raw regex for factor parsing.
+- **GPU connectivity device** — lazily resolved (no spurious CUDA imports).
+
+### Removed / deprecated
+
+- **`ov.fm` namespace dropped** — use `SCLLMManager` as the canonical foundation-model entry (PR #704). The `tests/fm/` directory was removed; architecture tests were updated to pin the bulk lazy route through `_wgcna` instead of `_Gene_module`.
+- **`xgboost` CPU path for `ov.es.mdt` / `ov.es.udt`** — replaced by the pure-torch GBDT (83× / 158× faster).
+- **`possible_paths` hardcoded fallback lists** — removed in favour of explicit configuration.
+
