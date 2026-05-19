@@ -1053,10 +1053,10 @@ End-to-end **16S rRNA amplicon → microbiome AnnData** pipeline.
 - Legacy ReadTheDocs MkDocs config.
 - Three shipped metabolomics data files (KEGG / LION / HMDB pathway subsets) — now fetched on demand.
 
-## v 2.1.3
+## v 2.2.0
 
 ### Scope
-- Summarises every change between `v2.1.2` and the `2.1.3rc1` dev tip: **207 commits**, **212 files changed**, **+34,878 / −8,888 lines**, ~50 merged PRs (#652 → #726).
+- Summarises every change between `v2.1.2` and the `v2.2.0` release tip: **208 commits**, **212 files changed**, **+34,878 / −8,888 lines**, ~50 merged PRs (#652 → #727).
 - Three top-level themes drove this release:
   1. **New analysis modules** — `ov.es` (vendored decoupler kernels with GPU acceleration), `ov.single.NMF` (Rust-backed), `ov.single.CNV` (copykat / infercnv), Geneformer in-silico perturbation, `ov.pp.champ`, `ov.report` (one-call HTML provenance report), `ov.space.RCTD`, `ov.space.nmf_tissue_zones`.
   2. **GPU-first preprocessing** — pure-PyTorch Leiden (74×), full-GPU parametric UMAP (21×), GPU KNN by default in `pp.neighbors`, native torch t-SNE, plus a ~20-method GPU sweep in `ov.es` (gsva 23–28×, mdt/udt 83–158×, viper 20×, gsea 13–16×, ora 48×).
