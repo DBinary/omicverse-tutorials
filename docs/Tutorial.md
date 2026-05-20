@@ -34,6 +34,17 @@ This page is the markdown overview for the tutorial structure defined in `mkdocs
 - Lipidomics
   - [Lipidomics with LIPID MAPS and LION](Tutorials-metabol/t_metabol_05_lipidomics.ipynb)
 
+## Proteomics
+
+- [Proteomics tutorial index](Tutorials-protein/index.md)
+- Bulk LC-MS/MS
+  - [Bulk LC-MS/MS best-practice pipeline](Tutorials-protein/t_protein_01_bulk_pipeline.ipynb)
+  - [Missing values: diagnosis & imputation](Tutorials-protein/t_protein_02_missing_values.ipynb)
+  - [Peptide → protein summarization & DIA](Tutorials-protein/t_protein_03_summarization_dia.ipynb)
+  - [Differential expression: methods compared](Tutorials-protein/t_protein_04_differential_expression.ipynb)
+- Affinity proteomics
+  - [Olink NPX affinity proteomics](Tutorials-protein/t_protein_05_olink.ipynb)
+
 ## Microbiome
 
 - [Microbiome tutorial index](Tutorials-microbiome/index.md)
