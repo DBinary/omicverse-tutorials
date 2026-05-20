@@ -73,6 +73,9 @@ extensions = [
     "sphinx_design",
     "sphinxext.opengraph",
     "hoverxref.extension",
+    # Keep legacy MkDocs trailing-slash URLs (.../t_deg/) resolving after the
+    # MkDocs -> Sphinx migration. See docs_zh/extensions/legacy_url_redirects.py.
+    "legacy_url_redirects",
 ]
 
 # -- Autodoc / Napoleon -------------------------------------------------------
