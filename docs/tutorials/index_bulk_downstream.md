@@ -7,6 +7,7 @@ Tutorials for bulk RNA-seq differential expression, network, and WGCNA analysis.
 
 ../Tutorials-bulk/t_deg
 ../Tutorials-bulk/t_deseq2
+../Tutorials-bulk/t_timecourse
 ../Tutorials-bulk/t_network
 ../Tutorials-bulk/t_wgcna
 ```
