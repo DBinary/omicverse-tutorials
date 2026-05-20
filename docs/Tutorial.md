@@ -79,8 +79,12 @@ This page is the markdown overview for the tutorial structure defined in `mkdocs
   - [Trajectory Inference with VIA and scVelo](Tutorials-single/t_via_velo.ipynb)
   - [Timing-associated genes analysis with TimeFateKernel](Tutorials-single/t_cellfate_gene.ipynb)
   - [Identify the driver regulators of cell fate decisions](Tutorials-single/t_cellfate.ipynb)
+- MetaCell
+  - [MetaCell overview — metacell vs pseudobulk](Tutorials-single/metacell/index.md)
+  - [Recommended workflow — SEACells end-to-end](Tutorials-single/metacell/t_metacell_recommended.ipynb)
+  - [Multi-sample metacells with batch correction](Tutorials-single/metacell/t_metacell_multisample.ipynb)
+  - [Backend zoo — 7 partitioners compared](Tutorials-single/metacell/zoo/index.md)
 - Cell Structure
-  - [Inference of MetaCell from Single-Cell RNA-seq](Tutorials-single/t_metacells.ipynb)
   - [Differential expression and celltype analysis [All Cell]](Tutorials-single/t_deg_single.ipynb)
   - [Differential expression analysis [Meta Cell]](Tutorials-single/t_scdeg.ipynb)
   - [Gene Regulatory Network Analysis with SCENIC](Tutorials-single/t_scenic.ipynb)

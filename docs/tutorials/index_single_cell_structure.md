@@ -5,7 +5,6 @@ Tutorials for cell structure analysis, differential expression, and regulatory n
 ```{toctree}
 :maxdepth: 1
 
-../Tutorials-single/t_metacells
 ../Tutorials-single/t_deg_single
 ../Tutorials-single/t_scdeg
 ../Tutorials-single/t_scenic

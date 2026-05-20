@@ -38,9 +38,15 @@ This page mirrors the `Single` section in `mkdocs.yml`.
 - [Timing-associated genes analysis with TimeFateKernel](t_cellfate_gene.ipynb)
 - [Identify the driver regulators of cell fate decisions](t_cellfate.ipynb)
 
+## MetaCell
+
+- [MetaCell overview — metacell vs pseudobulk, decision tree](metacell/index.md)
+- [Recommended workflow — SEACells end-to-end + downstream](metacell/t_metacell_recommended.ipynb)
+- [Multi-sample metacells with batch correction](metacell/t_metacell_multisample.ipynb)
+- [**Backend zoo** › SEACells · MetaQ · SuperCell · k-means · random · GeoSketch · compare](metacell/zoo/index.md)
+
 ## Cell Structure
 
-- [Inference of MetaCell from Single-Cell RNA-seq](t_metacells.ipynb)
 - [Differential expression and celltype analysis [All Cell]](t_deg_single.ipynb)
 - [Differential expression analysis [Meta Cell]](t_scdeg.ipynb)
 - [Gene Regulatory Network Analysis with SCENIC](t_scenic.ipynb)
