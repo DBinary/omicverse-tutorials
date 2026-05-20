@@ -9,6 +9,7 @@ annotation, trajectory analysis, cell-structure analysis, velocity, and multi-om
 index_single_alignment
 index_single_preprocessing
 index_single_annotation
+index_single_metacell
 index_single_trajectory
 index_single_communication
 index_single_cell_structure
