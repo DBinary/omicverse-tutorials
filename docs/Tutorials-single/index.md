@@ -41,6 +41,7 @@ This page mirrors the `Single` section in `mkdocs.yml`.
 ## Cell Structure
 
 - [Inference of MetaCell from Single-Cell RNA-seq](t_metacells.ipynb)
+- [MetaCell zoo — 7 backends compared side-by-side](metacell-zoo/index.md)
 - [Differential expression and celltype analysis [All Cell]](t_deg_single.ipynb)
 - [Differential expression analysis [Meta Cell]](t_scdeg.ipynb)
 - [Gene Regulatory Network Analysis with SCENIC](t_scenic.ipynb)
