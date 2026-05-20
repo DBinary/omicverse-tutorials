@@ -34,6 +34,16 @@ This page is the markdown overview for the tutorial structure defined in `mkdocs
 - Lipidomics
   - [Lipidomics with LIPID MAPS and LION](Tutorials-metabol/t_metabol_05_lipidomics.ipynb)
 
+## Proteomics
+
+- [Proteomics tutorial index](Tutorials-protein/index.md)
+- Bulk LC-MS/MS
+  - [Bulk proteomics: QC → impute → differential expression](Tutorials-protein/t_protein_01_intro.ipynb)
+- Peptide-level workflow
+  - [Peptide → protein summarization](Tutorials-protein/t_protein_02_summarization.ipynb)
+- Affinity proteomics
+  - [Olink NPX analysis](Tutorials-protein/t_protein_03_olink.ipynb)
+
 ## Microbiome
 
 - [Microbiome tutorial index](Tutorials-microbiome/index.md)
