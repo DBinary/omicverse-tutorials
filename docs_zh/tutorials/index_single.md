@@ -47,7 +47,7 @@
 ../Tutorials-single/t_traj_palantir
 ../Tutorials-single/t_traj_sctour
 ../Tutorials-single/t_traj_monocle2
-../Tutorials-single/t_stavia
+../Tutorials-single/t_traj_stavia
 ../Tutorials-single/t_via_velo
 ../Tutorials-single/t_cellfate_gene
 ../Tutorials-single/t_cellfate
@@ -100,6 +100,8 @@
 
 ../Tutorials-velo/t_velo
 ../Tutorials-velo/t_graphvelo
+../Tutorials-velo/t_regvelo
+../Tutorials-velo/t_regvelo_infer_grn
 ../Tutorials-velo/t_velo_cellrank
 ```
 
