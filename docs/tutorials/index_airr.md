@@ -20,5 +20,7 @@ single-cell analysis runs on numpy / pandas / anndata with no extra package.
 ```{toctree}
 :maxdepth: 1
 
-../Tutorials-airr/t_airr_01_overview
+../Tutorials-airr/t_airr_01_singlecell
+../Tutorials-airr/t_airr_02_bulk
+../Tutorials-airr/t_airr_03_bcr
 ```
