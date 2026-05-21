@@ -10,6 +10,7 @@ index_bulk
 index_metabol
 index_protein
 index_genetics
+index_airr
 index_microbiome
 index_single
 index_multi_omics
