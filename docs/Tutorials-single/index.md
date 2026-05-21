@@ -4,7 +4,9 @@ This page mirrors the `Single` section in `mkdocs.yml`.
 
 ## Alignment
 
-- [Alignment of single-cell RNA-seq data](t_alignment_1k.ipynb)
+- [Alignment of scRNA-seq data with simpleaf / alevin-fry](t_alignment_1k.ipynb)
+- [Alignment of scRNA-seq data with kb-python](t_alignment_kb.ipynb)
+- [simpleaf vs kb-python — speed & accuracy comparison](t_alignment_compare.ipynb)
 - [Alignment of single-cell RNA-seq data for RNA velocity analysis](t_alignment_velocity.ipynb)
 
 ## Preprocessing
