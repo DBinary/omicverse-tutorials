@@ -7,5 +7,7 @@ Tutorials for RNA velocity analysis.
 
 ../Tutorials-velo/t_velo
 ../Tutorials-velo/t_graphvelo
+../Tutorials-velo/t_regvelo
+../Tutorials-velo/t_regvelo_infer_grn
 ../Tutorials-velo/t_velo_cellrank
 ```

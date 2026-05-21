@@ -37,7 +37,7 @@
       "status": "ok"
     },
     "Tutorial.md": {
-      "english_hash": "6bcf9cb19a80550d68ca658ba45081ac3b2cb1dd2f8273342193d98f8b422d38",
+      "english_hash": "bfcafb625b9897f9bfc1f47e9b7b29f455f733caeffe37d9c1ff2e0b461980e4",
       "chinese_path": "Tutorial.md",
       "chinese_hash": null,
       "status": "missing_chinese"
@@ -577,9 +577,9 @@
       "status": "ok"
     },
     "Tutorials-single/index.md": {
-      "english_hash": "1679bcb72195773bc1fe9533add3513cddfb6760f9a76ec2881dafda54126ac1",
+      "english_hash": "6f510649e2b8ce8b4e204908a1a3cc798f98d1749f434a337c3738cc3ed12c81",
       "chinese_path": "Tutorials-single/index.md",
-      "chinese_hash": "893e420189368d5fc5af16b868618480a6929037483cf863d2025e9eea5dfacb",
+      "chinese_hash": "7d8b1a0533ab743c22863c85b9c36dbb40b7ef19152e77277709092e77960be8",
       "status": "ok"
     },
     "Tutorials-single/t_alignment_1k.ipynb": {
@@ -784,12 +784,6 @@
       "english_hash": "1c7d0eefc358ba85ca97abf7b1d9e03620b1f9d3c3e65748781755591f6530a7",
       "chinese_path": "Tutorials-single/t_single_batch.ipynb",
       "chinese_hash": "6dd9e1b5e0f6f3945514a64fa09a83316b5c3038016454c7c14db0f96a094121",
-      "status": "ok"
-    },
-    "Tutorials-single/t_stavia.ipynb": {
-      "english_hash": "9c3fb590b23ef561f91ebf25d1bbe63e90508a5f7085772e04e646888837919d",
-      "chinese_path": "Tutorials-single/t_stavia.ipynb",
-      "chinese_hash": "1e37124873b505b5f52f7b39c1a40ea521eecadb95b08dc5844ce99ea4af25b0",
       "status": "ok"
     },
     "Tutorials-single/t_tosica.ipynb": {
@@ -1015,9 +1009,9 @@
       "status": "ok"
     },
     "tutorials/index_single.md": {
-      "english_hash": "4dcc515424b96c97420348ef72c42e119de80d2fb53c01a3ab16547f52f88324",
+      "english_hash": "e1afde0eb26baaed2db54f0de1b724c89789b6282a3ffa6ff504a18365c80669",
       "chinese_path": "tutorials/index_single.md",
-      "chinese_hash": "d36f147efdd0f87257221e57044da8f987a6ea49d344172230613a0e1d277a45",
+      "chinese_hash": "c2ce374d1e86c0110d1b8006605b6921a439d7a57585516b35ec9d69fc572aa7",
       "status": "ok"
     },
     "tutorials/index_spatial.md": {
@@ -1025,14 +1019,62 @@
       "chinese_path": "tutorials/index_spatial.md",
       "chinese_hash": "992428fe68454c41a2337251bcf4a63326d62dcf17b333cb01a7a309ac4943fc",
       "status": "ok"
+    },
+    "Tutorials-single/t_traj_stavia.ipynb": {
+      "english_hash": "bfaae50c1df937380e4a78329aec3a7a1da6b01b00f39b16f1caf229de1668e4",
+      "chinese_path": "Tutorials-single/t_traj_stavia.ipynb",
+      "chinese_hash": "467878f80c22cde45d9386d052f411d1880aba1c3f1109bf152e342bd6924759",
+      "status": "ok"
+    },
+    "Tutorials-single/t_traj_diffusion.ipynb": {
+      "english_hash": "5cdfc606f58b6e1feb03653bc8cb0b627da17773d14a3ff709e10c94ce2ee5d5",
+      "chinese_path": "Tutorials-single/t_traj_diffusion.ipynb",
+      "chinese_hash": "16fcaaf5d0f4c75c6304ebedc38cd7077cbf0d5b58c39cf07e0187c97e2ce2fa",
+      "status": "ok"
+    },
+    "Tutorials-single/t_traj_monocle2.ipynb": {
+      "english_hash": "373d8949ed9cd122b3a317aedf224c85ea8c7c332a429cfc15099a50eac285e6",
+      "chinese_path": "Tutorials-single/t_traj_monocle2.ipynb",
+      "chinese_hash": "ed23db5b81a2fd5b47f37e02b30e3c5123020a784cc3c526eede9d46be7274ce",
+      "status": "ok"
+    },
+    "Tutorials-single/t_traj_palantir.ipynb": {
+      "english_hash": "7ee4deae35810da254a1e09ce2f15fd27033a23d72994a7e619b19580bf1b78d",
+      "chinese_path": "Tutorials-single/t_traj_palantir.ipynb",
+      "chinese_hash": "83cd6e2166cd1a7287160c9fc32a37894da96b31cd3114816a8c720cb86707bb",
+      "status": "ok"
+    },
+    "Tutorials-single/t_traj_sctour.ipynb": {
+      "english_hash": "ec9dc6767bee7054684937e491b033b4cefb32f056608dcb969e63147d9e8c25",
+      "chinese_path": "Tutorials-single/t_traj_sctour.ipynb",
+      "chinese_hash": "b3bf8bb532e76bf3b7e1e33a2f085563b95a2eb38eef9a51b3445159207dbe1d",
+      "status": "ok"
+    },
+    "Tutorials-single/t_traj_slingshot.ipynb": {
+      "english_hash": "9ce927764a546bc93e5361f35f3df47d723a7874b7e814b390ef04dce2e030a3",
+      "chinese_path": "Tutorials-single/t_traj_slingshot.ipynb",
+      "chinese_hash": "02b441f306fb1f1c476d6003c02a16489ce910332b40613db3bb453fb7f03653",
+      "status": "ok"
+    },
+    "Tutorials-velo/t_regvelo.ipynb": {
+      "english_hash": "fac5da84986e5224e3325c91fc4ad7704e2215a05e20ad65bc3479b063674c11",
+      "chinese_path": "Tutorials-velo/t_regvelo.ipynb",
+      "chinese_hash": "3b7ff52f720c02c7ab4ab85e52dc673aa45be7e136a2b3e6c8ae4adecebd9467",
+      "status": "ok"
+    },
+    "Tutorials-velo/t_regvelo_infer_grn.ipynb": {
+      "english_hash": "602d334eb73ee41889fd187e8eb14fae3cfcc644d4b394118dd4c3476b449994",
+      "chinese_path": "Tutorials-velo/t_regvelo_infer_grn.ipynb",
+      "chinese_hash": "2cf4f87fa3a9bbe62b91bfddf4c9a4ad948a7bee1dd9734034f15ad00452c76e",
+      "status": "ok"
     }
   },
   "stats": {
-    "total_english_files": 170,
-    "total_chinese_files": 165,
-    "mapped": 163,
+    "total_english_files": 173,
+    "total_chinese_files": 168,
+    "mapped": 166,
     "missing_chinese": 7,
     "new_english": 7
   },
-  "generated_at": "2026-04-03T13:07:50.171809"
+  "generated_at": "2026-05-21T16:37:58"
 }
