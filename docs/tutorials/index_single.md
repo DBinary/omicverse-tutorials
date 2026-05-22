@@ -17,4 +17,5 @@ index_single_cnv
 index_single_enrichment
 index_single_velocity
 index_single_multi_omics
+index_single_ev
 ```

@@ -75,3 +75,8 @@ This page mirrors the `Single` section in `mkdocs.yml`.
 - [Multi omics analysis by MOFA](t_mofa.ipynb)
 - [Multi omics analysis by MOFA and GLUE](t_mofa_glue.ipynb)
 - [Celltype annotation transfer in multi-omics](t_anno_trans.ipynb)
+
+## Single-EV proteomics
+
+- [Single-extracellular-vesicle (single-EV) proteomics — sequencing-count modality](t_single_ev.ipynb)
+- [Single-EV proteomics — imaging/intensity modality](t_single_ev_intensity.ipynb)
