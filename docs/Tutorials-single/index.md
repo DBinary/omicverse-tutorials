@@ -14,6 +14,7 @@ This page mirrors the `Single` section in `mkdocs.yml`.
 - [Preprocessing the data of scRNA-seq [CPU]](t_preprocess_cpu.ipynb)
 - [Preprocessing the data of scRNA-seq [GPU]](t_preprocess_gpu.ipynb)
 - [Preprocessing the data of scRNA-seq [Rust / out-of-memory]](t_preprocess_rust.ipynb)
+- [Ambient / contamination RNA removal](t_ambient_rna.ipynb)
 - [Clustering space](t_cluster.ipynb)
 - [Data integration and batch correction](t_single_batch.ipynb)
 - [Consensus Non-negative Matrix factorization (cNMF)](t_cnmf.ipynb)
