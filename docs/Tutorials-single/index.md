@@ -78,5 +78,4 @@ This page mirrors the `Single` section in `mkdocs.yml`.
 
 ## Single-EV proteomics
 
-- [Single-extracellular-vesicle (single-EV) proteomics — sequencing-count modality](t_single_ev.ipynb)
-- [Single-EV proteomics — imaging/intensity modality](t_single_ev_intensity.ipynb)
+- [Single-extracellular-vesicle (single-EV) proteomics](t_single_ev.ipynb)

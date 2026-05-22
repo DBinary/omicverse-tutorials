@@ -8,5 +8,4 @@ across sequencing-count, imaging-intensity and digital-binary platforms.
 :maxdepth: 1
 
 ../Tutorials-single/t_single_ev
-../Tutorials-single/t_single_ev_intensity
 ```
