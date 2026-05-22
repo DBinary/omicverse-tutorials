@@ -9,6 +9,7 @@ Most notebooks are designed to work in Google Colab with minimal setup.
 index_bulk
 index_metabol
 index_protein
+index_mol
 index_genetics
 index_airr
 index_microbiome
