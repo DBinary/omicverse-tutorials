@@ -61,6 +61,11 @@ This page mirrors the `Single` section in `mkdocs.yml`.
 - [Single-cell CNV with CopyKAT](t_copykat.ipynb)
 - [Single-cell CNV with inferCNV](t_infercnv.ipynb)
 
+## Metabolism
+
+- [Single-cell metabolism — scMetabolism, scFEA & Compass](t_metabolism.ipynb)
+- [Metabolite cell-cell communication with MEBOCOST](t_metabolism_ccc.ipynb)
+
 ## Enrichment
 
 - [Pathway analysis with AUCell](t_aucell.ipynb)
