@@ -1,4 +1,4 @@
-# Single-Cell RNA-seq
+# Single-Cell Transcriptomics
 
 Tutorials for the complete single-cell workflow: alignment, preprocessing,
 annotation, trajectory analysis, cell-structure analysis, velocity, and multi-omics.

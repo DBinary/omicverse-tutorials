@@ -1,4 +1,4 @@
-# Visualization & Plotting
+# Visualization
 
 Publication-quality visualizations for single-cell, bulk, spatial, and color-system workflows.
 

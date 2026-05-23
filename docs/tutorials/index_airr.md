@@ -1,4 +1,4 @@
-# Immune Repertoire (AIRR-seq)
+# Immune Repertoire
 
 Tutorials for the `omicverse.airr` module — a unified analysis framework for
 adaptive immune receptor repertoire sequencing (AIRR-seq: TCR / BCR).

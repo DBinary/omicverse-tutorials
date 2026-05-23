@@ -1,4 +1,4 @@
-# Bulk RNA-seq
+# Bulk Transcriptomics
 
 Tutorials covering upstream alignment, preprocessing, differential expression,
 network analysis, deconvolution, and TCGA workflows.

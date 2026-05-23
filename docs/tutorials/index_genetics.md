@@ -1,4 +1,4 @@
-# Genetics
+# Genomics
 
 A systematic, best-practice **GWAS pipeline** built on the
 `omicverse.genetics` module — a unified statistical-genetics framework that

@@ -1,4 +1,4 @@
-# Molecular structure & drug-binding
+# Structure & Docking
 
 Tutorials for the `omicverse.mol` module — the bridge from an omics **target
 protein** to its **3D structure** and **drug context**.
