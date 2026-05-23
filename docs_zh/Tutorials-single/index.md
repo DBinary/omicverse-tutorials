@@ -33,6 +33,8 @@
 - [使用 scTour 的轨迹推断](t_traj_sctour.ipynb)
 - [使用 Monocle 2 进行轨迹推断](t_traj_monocle2.ipynb)
 - [使用 StaVIA 的轨迹推断](t_traj_stavia.ipynb)
+- [使用 StaVIA 官方 toy_multifurcating 数据进行轨迹推断](t_traj_stavia_toy_multifurcating.ipynb)
+- [使用 VIA 进行轨迹推断](t_via.ipynb)
 - [使用 VIA 和 scVelo 的轨迹推断](t_via_velo.ipynb)
 - [使用 TimeFateKernel 的与时间相关的基因分析](t_cellfate_gene.ipynb)
 - [识别细胞命运决定的驱动调节因子](t_cellfate.ipynb)
