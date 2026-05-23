@@ -274,3 +274,70 @@ hoverxref_role_types = dict.fromkeys(
 hoverxref_intersphinx = ["python", "numpy", "scanpy", "anndata", "scipy", "pandas"]
 if os.environ.get("READTHEDOCS"):
     hoverxref_api_host = "/_"
+
+
+# -- Robustness shims --------------------------------------------------------
+# sphinx.ext.autosummary.extract_summary and
+# sphinx_autodoc_typehints._inject_types_to_docstring both call docutils.parse
+# on slices of a docstring. If any single docstring has a glitch (a stray
+# numbered list, an undefined RST substitution, a Returns header at an
+# unexpected nesting level, …), docutils raises SystemMessage(SEVERE/4) and
+# the whole RTD build aborts. We don't want one bad docstring to take down
+# the entire site, so wrap both call sites in a try/except that degrades to
+# a no-op for the offending object only.
+def _install_docstring_safety_nets(app):
+    import logging as _logging
+
+    _log = _logging.getLogger("omicverse.docs.safety")
+
+    # 1) sphinx.ext.autosummary.extract_summary
+    try:
+        from sphinx.ext import autosummary as _autosummary
+
+        _orig_extract = _autosummary.extract_summary
+
+        def _safe_extract_summary(doc, document):
+            try:
+                return _orig_extract(doc, document)
+            except Exception as exc:
+                _log.warning(
+                    "extract_summary failed (%s); returning empty summary",
+                    exc,
+                )
+                return ""
+
+        _autosummary.extract_summary = _safe_extract_summary
+    except Exception as exc:
+        _log.warning("could not wrap autosummary.extract_summary: %s", exc)
+
+    # 2) sphinx_autodoc_typehints._inject_types_to_docstring
+    try:
+        import sphinx_autodoc_typehints as _sat
+
+        _orig_inject = _sat._inject_types_to_docstring
+
+        def _safe_inject(type_hints, signature, original_obj, app_, what, name, lines):
+            try:
+                _orig_inject(
+                    type_hints, signature, original_obj, app_, what, name, lines,
+                )
+            except Exception as exc:
+                _log.warning(
+                    "typehints inject failed for %s (%s); leaving docstring as-is",
+                    name,
+                    exc,
+                )
+
+        _sat._inject_types_to_docstring = _safe_inject
+    except Exception as exc:
+        _log.warning(
+            "could not wrap sphinx_autodoc_typehints._inject_types_to_docstring: %s",
+            exc,
+        )
+
+
+def setup(app):
+    """Sphinx entry point — install per-object safety nets so a single
+    malformed docstring doesn't abort the whole HTML build."""
+    app.connect("builder-inited", _install_docstring_safety_nets)
+    return {"version": "1.0", "parallel_read_safe": True, "parallel_write_safe": True}
