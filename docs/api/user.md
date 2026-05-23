@@ -55,7 +55,7 @@ Public registry entries listed here: 414
    io.read_xenium
    io.save
    io.spatial.read_visium
-   io.write_visium_hd_cellseg
+   io.spatial.write_visium_hd_cellseg
 ```
 
 ## Alignment
@@ -72,30 +72,30 @@ Public registry entries listed here: 414
    alignment.count
    alignment.cutadapt
    alignment.dada2_pipeline
-   alignment.denoise
-   alignment.dereplicate
+   alignment.dada2.denoise
+   alignment.vsearch.dereplicate
    alignment.fastp
    alignment.fasttree
    alignment.featureCount
    alignment.fetch_rdp
    alignment.fetch_silva
    alignment.fetch_sintax_ref
-   alignment.filter_and_trim
-   alignment.filter_quality
+   alignment.dada2.filter_and_trim
+   alignment.vsearch.filter_quality
    alignment.fqdump
-   alignment.learn_errors
+   alignment.dada2.learn_errors
    alignment.mafft
-   alignment.make_seqtab
-   alignment.merge_pairs
+   alignment.dada2.make_seqtab
+   alignment.dada2.merge_pairs
    alignment.parallel_fastq_dump
    alignment.prefetch
    alignment.ref
-   alignment.remove_chimeras
-   alignment.sintax
+   alignment.dada2.remove_chimeras
+   alignment.vsearch.sintax
    alignment.STAR
-   alignment.uchime3_denovo
-   alignment.unoise3
-   alignment.usearch_global
+   alignment.vsearch.uchime3_denovo
+   alignment.vsearch.unoise3
+   alignment.vsearch.usearch_global
 ```
 
 ## Preprocessing (`pp`)
@@ -277,10 +277,10 @@ Public registry entries listed here: 414
    metabol.sample_qc
    metabol.sample_qc_plot
    metabol.serrf
-   metabol.significant_metabolites
+   metabol.pyMetabo.significant_metabolites
    metabol.transform
    metabol.vip_bar
-   metabol.vip_table
+   metabol.pyMetabo.vip_table
    metabol.volcano
 ```
 
@@ -292,38 +292,38 @@ Public registry entries listed here: 414
    :nosignatures:
 
    micro.Alpha
-   micro.ancombc
+   micro.DA.ancombc
    micro.attach_tree
    micro.Beta
-   micro.braycurtis
+   micro.Beta.braycurtis
    micro.clr
    micro.collapse_taxa
    micro.combine_studies
-   micro.conditional_probabilities
-   micro.cooccurrence
+   micro.MMvec.conditional_probabilities
+   micro.MMvec.cooccurrence
    micro.DA
-   micro.deseq2
+   micro.DA.deseq2
    micro.fetch_franzosa_ibd_2019
    micro.filter_by_prevalence
-   micro.fit
+   micro.MMvec.fit
    micro.ilr
    micro.meta_da
    micro.MMvec
-   micro.nmds
-   micro.observed
+   micro.Ordinate.nmds
+   micro.Alpha.observed
    micro.Ordinate
    micro.paired_cca
    micro.paired_spearman
-   micro.pcoa
+   micro.Ordinate.pcoa
    micro.plot_embedding_biplot
    micro.plot_mmvec_training
-   micro.proportion_explained
+   micro.Ordinate.proportion_explained
    micro.rarefy
-   micro.run
-   micro.shannon
+   micro.Alpha.run
+   micro.Alpha.shannon
    micro.simulate_paired
-   micro.top_pairs
-   micro.wilcoxon
+   micro.MMvec.top_pairs
+   micro.DA.wilcoxon
 ```
 
 ## Spatial transcriptomics (`space`)
@@ -426,7 +426,6 @@ Public registry entries listed here: 414
    pl.palette
    pl.plot1cell
    pl.plot_cellproportion
-   pl.plot_ConvexHull
    pl.plot_embedding_celltype
    pl.plot_flowsig_network
    pl.plot_grouped_fractions
@@ -434,10 +433,8 @@ Public registry entries listed here: 414
    pl.plot_set
    pl.plot_spatial
    pl.plot_text_set
-   pl.pyomic_palette
    pl.rank_genes_groups_dotplot
    pl.single_group_boxplot
-   pl.stacking_vol
    pl.tsne
    pl.umap
    pl.venn

@@ -111,6 +111,15 @@ napoleon_use_param = True
 napoleon_custom_sections = [("Params", "Parameters")]
 todo_include_todos = False
 
+# sphinx_autodoc_typehints — disable rtype injection. Its docstring parser
+# (called from `_inject_rtype` → `get_insert_index`) raises SystemMessage
+# SEVERE/4 when a function docstring has any RST/napoleon glitch (broken
+# indentation, undefined substitution, etc.), which aborts the whole build
+# on a single bad docstring. Skipping rtype injection avoids that path
+# without losing the param-type injection that we actually rely on.
+typehints_document_rtype = False
+always_document_param_types = True
+
 # -- MyST / myst-nb -----------------------------------------------------------
 myst_enable_extensions = [
     "amsmath",
