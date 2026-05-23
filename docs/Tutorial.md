@@ -2,7 +2,12 @@
 
 This page is the markdown overview for the tutorial structure defined in `mkdocs.yml`. It is meant to help readers scan the current OmicVerse tutorial map before jumping into notebooks or topic-specific guides.
 
-## Bulk
+## Genomics
+
+- [GWAS — end-to-end pipeline](Tutorials-genetics/t_genetics_01_gwas_pipeline.ipynb)
+- [Functional follow-up of GWAS hits](Tutorials-genetics/t_genetics_02_functional_followup.ipynb)
+
+## Bulk Transcriptomics
 
 - [Bulk tutorial index](Tutorials-bulk/index.md)
 - Upstream
@@ -20,42 +25,7 @@ This page is the markdown overview for the tutorial structure defined in `mkdocs
 - Others
   - [TCGA database preprocess](Tutorials-bulk/t_tcga.ipynb)
 
-## Metabolomics
-
-- [Metabolomics tutorial index](Tutorials-metabol/index.md)
-- Preprocessing and univariate analysis
-  - [Metabolomics preprocessing and univariate statistics](Tutorials-metabol/t_metabol_01_intro.ipynb)
-- Multivariate discrimination
-  - [Multivariate discrimination with PLS-DA and OPLS-DA](Tutorials-metabol/t_metabol_02_multivariate.ipynb)
-- Pathway enrichment
-  - [Metabolite-set enrichment analysis (MSEA)](Tutorials-metabol/t_metabol_03_pathway.ipynb)
-- Untargeted LC-MS
-  - [Untargeted LC-MS and mummichog pathway inference](Tutorials-metabol/t_metabol_04_untargeted.ipynb)
-- Lipidomics
-  - [Lipidomics with LIPID MAPS and LION](Tutorials-metabol/t_metabol_05_lipidomics.ipynb)
-
-## Proteomics
-
-- [Proteomics tutorial index](Tutorials-protein/index.md)
-- Bulk LC-MS/MS
-  - [Bulk LC-MS/MS best-practice pipeline](Tutorials-protein/t_protein_01_bulk_pipeline.ipynb)
-  - [Missing values: diagnosis & imputation](Tutorials-protein/t_protein_02_missing_values.ipynb)
-  - [Peptide → protein summarization & DIA](Tutorials-protein/t_protein_03_summarization_dia.ipynb)
-  - [Differential expression: methods compared](Tutorials-protein/t_protein_04_differential_expression.ipynb)
-- Affinity proteomics
-  - [Olink NPX affinity proteomics](Tutorials-protein/t_protein_05_olink.ipynb)
-
-## Microbiome
-
-- [Microbiome tutorial index](Tutorials-microbiome/index.md)
-- Amplicon (16S / ITS / 18S)
-  - [16S amplicon pipeline (cutadapt + vsearch UNOISE3 + SINTAX)](Tutorials-microbiome/t_16s_amplicon.ipynb)
-  - [16S phylogeny: MAFFT + FastTree → Faith PD + UniFrac](Tutorials-microbiome/t_16s_phylogeny.ipynb)
-  - [DADA2 backend (pure-Python via pydada2)](Tutorials-microbiome/t_16s_dada2.ipynb)
-  - [Differential abundance: Wilcoxon vs DESeq2 vs ANCOM-BC](Tutorials-microbiome/t_16s_da_comparison.ipynb)
-  - [Cross-cohort 16S meta-analysis (combine_studies + meta_da)](Tutorials-microbiome/t_16s_meta_analysis.ipynb)
-
-## Single
+## Single-Cell Transcriptomics
 
 - [Single-cell tutorial index](Tutorials-single/index.md)
 - Alignment
@@ -116,17 +86,7 @@ This page is the markdown overview for the tutorial structure defined in `mkdocs
   - [Multi omics analysis by MOFA and GLUE](Tutorials-single/t_mofa_glue.ipynb)
   - [Celltype annotation transfer in multi-omics](Tutorials-single/t_anno_trans.ipynb)
 
-## Multi-Omics
-
-- [Multi-Omics tutorial index](Tutorials-Multi-Omics/index.md)
-- [Bulk ↔ Single-cell ↔ Spatial overview](Tutorials-Multi-Omics/bulk-single/index.md)
-- [Bulk RNA-seq generate 'interrupted' cells to interpolate scRNA-seq](Tutorials-Multi-Omics/bulk-single/t_bulktrajblend.ipynb)
-- [Bulk RNA-seq to Single RNA-seq](Tutorials-Multi-Omics/bulk-single/t_bulk2single.ipynb)
-- [Single RNA-seq to Spatial RNA-seq](Tutorials-Multi-Omics/bulk-single/t_single2spatial.ipynb)
-- [Microbe ↔ Metabolite overview](Tutorials-Multi-Omics/micro-meta/index.md)
-- [Paired microbe ↔ metabolite integration (MMvec-style)](Tutorials-Multi-Omics/micro-meta/t_micro_metabol_paired.ipynb)
-
-## Space
+## Spatial Transcriptomics
 
 - [Space tutorial overview](Tutorials-space/index.md)
 - Preprocess
@@ -150,7 +110,67 @@ This page is the markdown overview for the tutorial structure defined in `mkdocs
   - [Spatial IsoDepth Calculation](Tutorials-space/t_gaston.ipynb)
   - [Single cell spatial alignment tools](Tutorials-space/t_slat.ipynb)
 
-## Foundation Model (`ov.llm.SCLLMManager`)
+## Immune Repertoire
+
+- [AIRR-seq tutorial index](Tutorials-airr/index.md)
+- [Single-cell TCR + transcriptome — the immune-repertoire pipeline](Tutorials-airr/t_airr_01_singlecell.ipynb)
+- [Bulk TCR repertoire analysis (immunarch backend)](Tutorials-airr/t_airr_02_bulk.ipynb)
+- [BCR somatic hypermutation, selection & lineage trees (Immcantation)](Tutorials-airr/t_airr_03_bcr.ipynb)
+- [TCR specificity — TCRdist, GLIPH2, meta-clonotypes, VDJdb annotation](Tutorials-airr/t_airr_04_tcr.ipynb)
+- [Joint TCR + gene-expression analysis (CoNGA-style)](Tutorials-airr/t_airr_05_tcr_gex.ipynb)
+
+## Proteomics
+
+- [Proteomics tutorial index](Tutorials-protein/index.md)
+- Bulk LC-MS/MS
+  - [Bulk LC-MS/MS best-practice pipeline](Tutorials-protein/t_protein_01_bulk_pipeline.ipynb)
+  - [Missing values: diagnosis & imputation](Tutorials-protein/t_protein_02_missing_values.ipynb)
+  - [Peptide → protein summarization & DIA](Tutorials-protein/t_protein_03_summarization_dia.ipynb)
+  - [Differential expression: methods compared](Tutorials-protein/t_protein_04_differential_expression.ipynb)
+- Affinity proteomics
+  - [Olink NPX affinity proteomics](Tutorials-protein/t_protein_05_olink.ipynb)
+
+## Structure & Docking
+
+- [3D molecular structure visualization](Tutorials-mol/t_mol_structure.ipynb)
+- [Binding-pocket detection & druggability (fpocket)](Tutorials-mol/t_mol_druggability.ipynb)
+- [Molecular docking with AutoDock Vina](Tutorials-mol/t_mol_docking.ipynb)
+
+## Metabolomics
+
+- [Metabolomics tutorial index](Tutorials-metabol/index.md)
+- Preprocessing and univariate analysis
+  - [Metabolomics preprocessing and univariate statistics](Tutorials-metabol/t_metabol_01_intro.ipynb)
+- Multivariate discrimination
+  - [Multivariate discrimination with PLS-DA and OPLS-DA](Tutorials-metabol/t_metabol_02_multivariate.ipynb)
+- Pathway enrichment
+  - [Metabolite-set enrichment analysis (MSEA)](Tutorials-metabol/t_metabol_03_pathway.ipynb)
+- Untargeted LC-MS
+  - [Untargeted LC-MS and mummichog pathway inference](Tutorials-metabol/t_metabol_04_untargeted.ipynb)
+- Lipidomics
+  - [Lipidomics with LIPID MAPS and LION](Tutorials-metabol/t_metabol_05_lipidomics.ipynb)
+
+## Microbiome
+
+- [Microbiome tutorial index](Tutorials-microbiome/index.md)
+- Amplicon (16S / ITS / 18S)
+  - [16S amplicon pipeline (cutadapt + vsearch UNOISE3 + SINTAX)](Tutorials-microbiome/t_16s_amplicon.ipynb)
+  - [16S phylogeny: MAFFT + FastTree → Faith PD + UniFrac](Tutorials-microbiome/t_16s_phylogeny.ipynb)
+  - [DADA2 backend (pure-Python via pydada2)](Tutorials-microbiome/t_16s_dada2.ipynb)
+  - [Differential abundance: Wilcoxon vs DESeq2 vs ANCOM-BC](Tutorials-microbiome/t_16s_da_comparison.ipynb)
+  - [Cross-cohort 16S meta-analysis (combine_studies + meta_da)](Tutorials-microbiome/t_16s_meta_analysis.ipynb)
+
+## Multi-Omics
+
+- [Multi-Omics tutorial index](Tutorials-Multi-Omics/index.md)
+- [Bulk ↔ Single-cell ↔ Spatial overview](Tutorials-Multi-Omics/bulk-single/index.md)
+- [Bulk RNA-seq generate 'interrupted' cells to interpolate scRNA-seq](Tutorials-Multi-Omics/bulk-single/t_bulktrajblend.ipynb)
+- [Bulk RNA-seq to Single RNA-seq](Tutorials-Multi-Omics/bulk-single/t_bulk2single.ipynb)
+- [Single RNA-seq to Spatial RNA-seq](Tutorials-Multi-Omics/bulk-single/t_single2spatial.ipynb)
+- [Microbe ↔ Metabolite overview](Tutorials-Multi-Omics/micro-meta/index.md)
+- [Paired microbe ↔ metabolite integration (MMvec-style)](Tutorials-Multi-Omics/micro-meta/t_micro_metabol_paired.ipynb)
+
+## Foundation Models
 
 - [Foundation model overview](Tutorials-llm/index.md)
 - [scGPT](Tutorials-llm/t_scgpt.ipynb)
@@ -159,7 +179,7 @@ This page is the markdown overview for the tutorial structure defined in `mkdocs
 - [UCE](Tutorials-llm/t_uce.ipynb)
 - [CellPLM](Tutorials-llm/t_cellplm.ipynb)
 
-## Plotting
+## Visualization
 
 - [Plotting tutorial overview](Tutorials-plotting/index.md)
 - [Visualization of single cell RNA-seq](Tutorials-plotting/t_visualize_single.ipynb)
@@ -167,27 +187,3 @@ This page is the markdown overview for the tutorial structure defined in `mkdocs
 - [Palette optimization for publication-quality single-cell & spatial plots](Tutorials-plotting/t_palette.ipynb)
 - [Color system](Tutorials-plotting/t_visualize_colorsystem.ipynb)
 - [Circular UMAP + plot1cell-style visualizations](Tutorials-plotting/t_plot1cell.ipynb)
-
-## OmicClaw
-
-- Gateway and channels
-  - [Overview](Tutorials-jarvis/t_msg_bot_overview.md)
-  - [Setup and Auth](Tutorials-jarvis/t_setup_auth.md)
-  - [Telegram Tutorial](Tutorials-jarvis/t_channel_telegram.md)
-  - [Feishu Tutorial](Tutorials-jarvis/t_channel_feishu.md)
-  - [iMessage Tutorial](Tutorials-jarvis/t_channel_imessage.md)
-  - [QQ Tutorial](Tutorials-jarvis/t_channel_qq.md)
-  - [Session Workflow](Tutorials-jarvis/t_session_commands.md)
-  - [Common Issues](Tutorials-jarvis/t_troubleshooting.md)
-- MCP server
-  - [Overview](Tutorials-llm/t_mcp_guide.md)
-  - [Quick Start](Tutorials-llm/t_mcp_quickstart.md)
-  - [Full Start](Tutorials-llm/t_mcp_full_start.md)
-  - [Tool Catalog](Tutorials-llm/t_mcp_tools.md)
-  - [Clients and Deployment](Tutorials-llm/t_mcp_clients.md)
-  - [Runtime and Troubleshooting](Tutorials-llm/t_mcp_runtime.md)
-  - [Reference](Tutorials-llm/t_mcp_reference.md)
-  - [Claude Code Walkthrough](Tutorials-llm/t_mcp_claude_code.md)
-- General notebook / pipeline workflows
-  - [J.A.R.V.I.S. with PBMC3k](Tutorials-llm/t_ov_agent_pbmc3k.ipynb)
-  - [J.A.R.V.I.S. with Ten-Task Suite](Tutorials-llm/ov_agent_ten_task_suite.ipynb)
