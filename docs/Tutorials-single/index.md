@@ -30,16 +30,9 @@ This page mirrors the `Single` section in `mkdocs.yml`.
 
 ## Trajectory
 
-- [Prediction of absolute developmental potential using CytoTrace2](t_cytotrace.ipynb)
-- [Trajectory Inference with Diffusion Map and PAGA](t_traj_diffusion.ipynb)
-- [Trajectory Inference with Slingshot](t_traj_slingshot.ipynb)
-- [Trajectory Inference with Palantir](t_traj_palantir.ipynb)
-- [Trajectory Inference with scTour](t_traj_sctour.ipynb)
-- [Trajectory Inference with Monocle 2](t_traj_monocle2.ipynb)
-- [Trajectory Inference with StaVIA](t_traj_stavia.ipynb)
-- [Trajectory Inference with StaVIA Official toy_multifurcating Data](t_traj_stavia_toy_multifurcating.ipynb)
-- [Trajectory Inference with VIA](t_via.ipynb)
-- [Trajectory Inference with VIA and scVelo](t_via_velo.ipynb)
+- [Trajectory inference overview — backends, decision tree, schema](trajectory/index.md)
+- [Recommended workflow — Slingshot end-to-end on a branching topology](trajectory/t_traj_recommended.ipynb)
+- [**Backend zoo** › Palantir · diffusion-map · scTour · StaVIA · Monocle 2 · VIA · CytoTrace 2 · SCORPIUS · TSCAN · destiny · URD · Monocle 3 · CytoTRACE](trajectory/zoo/index.md)
 - [Timing-associated genes analysis with TimeFateKernel](t_cellfate_gene.ipynb)
 - [Identify the driver regulators of cell fate decisions](t_cellfate.ipynb)
 
