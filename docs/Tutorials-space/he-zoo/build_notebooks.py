@@ -112,6 +112,25 @@ def hest_fm_cells() -> list[nbf.NotebookNode]:
             print('omicverse', ov.__version__, '| lazyslide', zs.__version__)
         """),
         _md("""
+            ## How the WSI flows through LazySlide
+
+            `ov.space.histo` does **not** re-implement WSI handling —
+            it wraps [LazySlide](https://github.com/RendeiroLab/LazySlide)
+            (the scverse-aligned WSI toolkit) and lifts its `WSIData`
+            container into the omicverse namespace. Concretely:
+
+            | omicverse call | LazySlide / wsidata under the hood |
+            |---|---|
+            | `ov.space.histo.open_wsi(path)` | `wsidata.open_wsi(path)` — returns a `WSIData` (a `SpatialData` subclass) wrapping the slide reader (openslide / tiffslide / bioformats) and a thumbnail |
+            | `ov.space.histo.tile(wsi, …)` | `zs.pp.find_tissues` + `zs.pp.tile_tissues` — writes tissue contours to `wsi.shapes['tissues']` and a tile grid to `wsi.shapes['tiles']` |
+            | `ov.space.histo.embed(wsi, model=…)` | `zs.tl.feature_extraction` — runs the chosen pathology FM on every tile and stores features as `wsi.tables['{model}_tiles']` (an AnnData with one row per tile) |
+            | `ov.space.histo.predict_expression(wsi, method=…)` | omicverse-specific: writes another AnnData table `wsi.tables['{method}_tiles']` with predicted gene expression |
+
+            The `WSIData` API surface stays available — drop down to
+            `zs.pp.*` / `zs.tl.*` / `zs.pl.*` whenever you need finer
+            control than the convenience wrappers expose.
+        """),
+        _md("""
             ## Inputs HEST-FM expects
 
             Two objects, both in the *same pixel coordinate frame*:
@@ -134,6 +153,34 @@ def hest_fm_cells() -> list[nbf.NotebookNode]:
             Both objects are returned together by `load_breast()`; the
             next markdown cell shows how to assemble them for your own
             data.
+        """),
+        _md("""
+            ## Model weights & cache layout
+
+            HEST-FM uses **one pretrained foundation-model checkpoint**
+            (the patch encoder) and trains a tiny ridge head per gene
+            on the user's reference. Everything is auto-downloaded on
+            first use; nothing needs manual setup beyond the install.
+
+            | What | From | To | Size | Gated? |
+            |---|---|---|---|---|
+            | `ctranspath` patch encoder (default) | LazySlide model registry → HF `RendeiroLab/LazySlide-models-gpl` | `$HF_HOME/hub/` (default `~/.cache/huggingface/hub`) | ~100 MB | no |
+            | reference spot-patch features (per slide / backbone) | computed once | `$OV_HISTO_CACHE/ref_features/{backbone}_{slide_stem}_n{n_spots}.h5ad` | ~10–50 MB | — |
+            | query tile features (per slide / tile-grid / backbone) | computed once | `$OV_HISTO_CACHE/tile_features/{backbone}_{slide_stem}_{tile_key}_n{n_tiles}.h5ad` | ~10–50 MB | — |
+            | per-gene Ridge head | trained at predict time | in-memory, not persisted | — | — |
+
+            `$OV_HISTO_CACHE` defaults to `~/.cache/omicverse/histo`.
+            Override the location with `OV_HISTO_CACHE=/some/path`
+            (recommended on HPC: point it at a scratch filesystem).
+            Override the HuggingFace location with `HF_HOME=/some/path`
+            (default `~/.cache/huggingface`).
+
+            **Swapping to a more accurate gated backbone** — set
+            `fm_backbone='uni2'` (or `'conch_v1.5'`, `'virchow2'`,
+            `'gigapath'`, `'h-optimus-1'`) once you have HuggingFace
+            access. Request access on the model card, then
+            `huggingface-cli login` once on this machine. LazySlide
+            handles the gated download for you.
         """),
         _md("## Load the demo dataset"),
         _md(
@@ -368,6 +415,22 @@ def stpath_cells() -> list[nbf.NotebookNode]:
             print('omicverse', ov.__version__, '| lazyslide', zs.__version__)
         """),
         _md("""
+            ## How the WSI flows through LazySlide
+
+            `ov.space.histo` wraps [LazySlide](https://github.com/RendeiroLab/LazySlide)
+            for everything WSI-related. The mapping is:
+
+            | omicverse call | LazySlide / wsidata under the hood |
+            |---|---|
+            | `ov.space.histo.open_wsi(path)` | `wsidata.open_wsi(path)` → returns `WSIData` (a `SpatialData` subclass) |
+            | `ov.space.histo.tile(wsi, …)` | `zs.pp.find_tissues` + `zs.pp.tile_tissues` → `wsi.shapes['tiles']` |
+            | `ov.space.histo.embed(wsi, model='gigapath')` | `zs.tl.feature_extraction(model='gigapath')` → `wsi.tables['gigapath_tiles']` (one row per tile, 1536-d features) |
+            | `ov.space.histo.predict_expression(wsi, method='stpath')` | omicverse-specific: writes the STPath prediction as `wsi.tables['stpath_tiles']` |
+
+            Drop down to `zs.pp.*` / `zs.tl.*` / `zs.pl.*` whenever you
+            need finer control than these convenience wrappers offer.
+        """),
+        _md("""
             ## Inputs STPath expects
 
             STPath needs only a tiled WSI; *no Visium reference*. Concretely:
@@ -396,6 +459,39 @@ def stpath_cells() -> list[nbf.NotebookNode]:
             The demo below uses the breast Visium slide for direct
             head-to-head comparison with the other HE-zoo tutorials; the
             Visium counts are not used by STPath, only the H&E.
+        """),
+        _md("""
+            ## Model weights & cache layout
+
+            STPath needs **two pretrained checkpoints + one git
+            clone** + the gene vocabulary. Everything below downloads on
+            first use; nothing needs manual setup beyond requesting
+            GigaPath access on HuggingFace.
+
+            | What | From | To | Size | Gated? |
+            |---|---|---|---|---|
+            | GigaPath patch encoder (`pytorch_model.bin`) | HF [`prov-gigapath/prov-gigapath`](https://huggingface.co/prov-gigapath/prov-gigapath) | `$HF_HOME/hub/` (default `~/.cache/huggingface/hub`) | ~4 GB | **yes — request access** |
+            | STPath model weights (`stfm.pth`) | HF [`tlhuang/STPath`](https://huggingface.co/tlhuang/STPath) | `$OV_HISTO_CACHE/hf/` | ~1 GB | no |
+            | STPath python package | git clone `Graph-and-Geometric-Learning/STPath` | `$OV_HISTO_CACHE/STPath/` (added to `sys.path` automatically) | ~100 MB | no |
+            | Gene vocabulary (`symbol2ensembl.json`) | shipped inside the STPath clone | `$OV_HISTO_CACHE/STPath/utils_data/` | small | no |
+            | tile features (per slide / tile-grid) | computed once | `$OV_HISTO_CACHE/tile_features/gigapath_{slide_stem}_{tile_key}_n{n_tiles}.h5ad` | ~10–50 MB | — |
+
+            `$OV_HISTO_CACHE` defaults to `~/.cache/omicverse/histo`;
+            override with `OV_HISTO_CACHE=/some/path` (recommended on
+            HPC: point it at scratch). `$HF_HOME` defaults to
+            `~/.cache/huggingface`; override with `HF_HOME=/some/path`.
+
+            **Requesting GigaPath access**: visit the model card,
+            click "Request access", fill the Microsoft Research data-
+            use agreement, wait for approval (usually hours to a few
+            days). After approval, on this machine:
+
+            ```bash
+            huggingface-cli login   # paste a Read token
+            ```
+
+            The `embed(model='gigapath')` call below will then succeed.
+            Without access it raises `GatedRepoError`.
         """),
         _md("## Load the demo dataset"),
         _code("""
@@ -556,6 +652,20 @@ def stflow_cells() -> list[nbf.NotebookNode]:
             print('omicverse', ov.__version__, '| lazyslide', zs.__version__)
         """),
         _md("""
+            ## How the WSI flows through LazySlide
+
+            `ov.space.histo` wraps [LazySlide](https://github.com/RendeiroLab/LazySlide)
+            for tiling, FM embedding, and the `WSIData` container.
+            STFlow only adds the flow-matching denoiser on top:
+
+            | omicverse call | LazySlide / wsidata under the hood |
+            |---|---|
+            | `ov.space.histo.open_wsi(path)` / `read_visium_with_image` | `wsidata.open_wsi` → `WSIData` (a `SpatialData` subclass) |
+            | `ov.space.histo.tile(wsi, …)` | `zs.pp.find_tissues` + `zs.pp.tile_tissues` → `wsi.shapes['tiles']` |
+            | `ov.space.histo.embed(wsi, model='ctranspath')` | `zs.tl.feature_extraction(model='ctranspath')` → `wsi.tables['ctranspath_tiles']` |
+            | `ov.space.histo.predict_expression(wsi, method='stflow', reference=…)` | omicverse-specific: trains the STFlow denoiser on a tile-grid cut from the reference, runs reverse-time ODE on query tile features, writes `wsi.tables['stflow_tiles']` |
+        """),
+        _md("""
             ## Inputs STFlow expects
 
             Same shape as HEST-FM — STFlow trains on the reference
@@ -583,6 +693,37 @@ def stflow_cells() -> list[nbf.NotebookNode]:
                 image_path='/path/to/HE.tif',
             )
             ```
+        """),
+        _md("""
+            ## Model weights & cache layout
+
+            STFlow has **no released pretrained checkpoint** (the
+            authors productionised that path as STPath). It is
+            trained from scratch on the user's paired reference slide
+            every run. The only thing downloaded is the patch encoder.
+
+            | What | From | To | Size | Gated? |
+            |---|---|---|---|---|
+            | `ctranspath` patch encoder (default) | LazySlide model registry → HF `RendeiroLab/LazySlide-models-gpl` | `$HF_HOME/hub/` (default `~/.cache/huggingface/hub`) | ~100 MB | no |
+            | STFlow python package | git clone `Graph-and-Geometric-Learning/STFlow` | `$OV_HISTO_CACHE/STFlow/` (added to `sys.path` automatically) | ~80 MB | no |
+            | reference / query tile features | computed once | `$OV_HISTO_CACHE/ref_features/` and `$OV_HISTO_CACHE/tile_features/` | ~10–50 MB each | — |
+            | per-slide denoiser weights | trained each run | in-memory, not persisted | — | — |
+
+            `$OV_HISTO_CACHE` defaults to `~/.cache/omicverse/histo`;
+            override with `OV_HISTO_CACHE=/some/path` (recommended on
+            HPC: point it at scratch). `$HF_HOME` defaults to
+            `~/.cache/huggingface`; override with `HF_HOME=/some/path`.
+
+            On first import omicverse also applies a tiny patch to
+            upstream `stflow/model/transformer.py` (the upstream
+            `GeneUpdate.__init__` doesn't accept a `non_negative=`
+            kwarg that the caller passes — a known upstream bug). This
+            keeps subsequent re-clones idempotent.
+
+            **Swapping to a gated backbone** — set
+            `fm_backbone='uni2'` / `'gigapath'` / `'virchow2'` once
+            you have HuggingFace access. Quality usually improves;
+            training time is unchanged.
         """),
         _md("## Load the demo dataset and tile / embed"),
         _md(
@@ -780,6 +921,50 @@ def istar_cells() -> list[nbf.NotebookNode]:
 
             Both objects are returned together by the convenience loader
             below; the next section shows how to assemble them yourself.
+        """),
+        _md("""
+            ## How the WSI flows through LazySlide
+
+            iStar trains its own per-slide regression head, so it does
+            NOT need a pathology FM-embedding pass through LazySlide
+            the way the spot-level backends do. What it still uses
+            from LazySlide is the WSI container itself:
+
+            | omicverse call | LazySlide / wsidata under the hood |
+            |---|---|
+            | `ov.space.histo.open_wsi(path)` / `read_visium_with_image` | `wsidata.open_wsi(path)` → returns `WSIData` (a `SpatialData` subclass) wrapping the slide reader (openslide / tiffslide / bioformats) + a thumbnail |
+            | `wsi.read_region(x, y, w, h, level=…)` | the iStar wrapper uses this internally to extract patches around each Visium spot before handing them to HIPT |
+            | `ov.space.histo.super_resolve(adata, wsi=wsi, method='istar')` | omicverse-specific: stages inputs, trains the iStar head, returns the sub-spot AnnData |
+
+            For iStar specifically there is no `embed(model=…)` step —
+            HIPT feature extraction is part of the iStar pipeline and
+            uses iStar's own checkpoints, not the LazySlide model
+            registry. Tiling (`ov.space.histo.tile(…)`) is also
+            optional for the iStar path; the wrapper builds its own
+            spot-aligned patch grid from `adata.obsm['spatial']` +
+            `spot_diameter_fullres`.
+        """),
+        _md("""
+            ## Model weights & cache layout
+
+            iStar wraps two pretrained HIPT vision-transformer
+            checkpoints and trains the regression head from scratch on
+            each slide.
+
+            | What | From | To | Size | Gated? |
+            |---|---|---|---|---|
+            | HIPT-256 (`vit256_small_dino.pth`) | mahmoodlab/HIPT GitHub LFS mirror | `$OV_HISTO_CACHE/istar_checkpoints/` (symlinked into `omicverse/external/istar/checkpoints/`) | ~672 MB | no |
+            | HIPT-4K (`vit4k_xs_dino.pth`) | mahmoodlab/HIPT GitHub LFS mirror | `$OV_HISTO_CACHE/istar_checkpoints/` (symlinked) | ~378 MB | no |
+            | iStar Python source | vendored in `omicverse/external/istar/` | shipped with omicverse | ~600 KB | — |
+            | per-slide super-resolution outputs | written by iStar | `$OV_HISTO_CACHE/istar_runs/{slide_stem}/cnts-super/{gene}.pickle` | ~10 MB / 50 genes | — |
+            | per-slide regression head weights | trained each run | `$OV_HISTO_CACHE/istar_runs/{slide_stem}/states/` | ~50 MB | — |
+
+            `$OV_HISTO_CACHE` defaults to `~/.cache/omicverse/histo`;
+            override with `OV_HISTO_CACHE=/some/path` (recommended on
+            HPC: point it at scratch).
+
+            Subsequent calls with the same `(slide, gene panel)` hit
+            the on-disk pickle cache and skip re-training entirely.
         """),
         _md("## Load the demo dataset"),
         _md(
