@@ -37,3 +37,12 @@ See [`cluster/index.md`](cluster/index.md) for the full overview, recommendation
 - [Spatial Communication](t_commot_flowsig.ipynb)
 - [Spatial IsoDepth Calculation](t_gaston.ipynb)
 - [Single cell spatial alignment tools](t_slat.ipynb)
+
+## H&E → spatial transcriptomics (HE-zoo)
+
+See [`he-zoo/index.md`](he-zoo/index.md) for the full overview and recommendations on which backend to pick. Every notebook predicts on the same 10x Visium Breast Cancer Block A Section 1 sample so results are directly comparable.
+
+- [Quick start: HEST-FM (CTransPath + Ridge)](he-zoo/t_histo_hest_fm.ipynb) — Jaume et al., *NeurIPS 2024* Spotlight
+- [STPath zero-shot prediction](he-zoo/t_histo_stpath.ipynb) — Huang et al., *npj Digital Medicine* 2025
+- [STFlow per-slide fine-tune](he-zoo/t_histo_stflow.ipynb) — Huang et al., *ICML 2025* Spotlight
+- [iStar super-resolution](he-zoo/t_histo_istar.ipynb) — Zhang et al., *Nature Biotechnology* 2024
