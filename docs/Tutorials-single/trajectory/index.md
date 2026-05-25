@@ -12,7 +12,8 @@ This section has three layers:
 | Layer | Tutorial | When |
 |---|---|---|
 | **1. Recommended workflow** | [t_traj_slingshot](t_traj_slingshot.ipynb) | Day-one user. Slingshot end-to-end on a real branching dataset, with PAGA overlay, branch-aware dynamic heatmaps and lineage-resolved trend plots. |
-| **2. Method zoo** | [zoo/index](zoo/index.md) | You want to compare backends side-by-side, or you need a method that handles a specific topology (linear / multifurcating / cycle / convergence). 15 tutorials, one per backend. |
+| **2. Unified downstream — fate** | [t_traj_fate](t_traj_fate.ipynb) | After any pseudotime backend you can run ``ov.single.PseudotimeFate(adata, pseudotime_key=...)`` for **macrostates → terminal states → fate probabilities** in <1 s on 3.7 k cells (≈300× faster than CellRank). Backend-agnostic — same code for Palantir / Slingshot / SCORPIUS / destiny / …. |
+| **3. Method zoo** | [zoo/index](zoo/index.md) | You want to compare backends side-by-side, or you need a method that handles a specific topology (linear / multifurcating / cycle / convergence). 15 tutorials, one per backend. |
 
 ## Recommendation tree
 
