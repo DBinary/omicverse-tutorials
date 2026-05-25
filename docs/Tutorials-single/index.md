@@ -31,7 +31,7 @@ This page mirrors the `Single` section in `mkdocs.yml`.
 ## Trajectory
 
 - [Trajectory inference overview — backends, decision tree, schema](trajectory/index.md)
-- [Recommended workflow — Slingshot end-to-end on a branching topology](trajectory/t_traj_recommended.ipynb)
+- [Recommended workflow — Slingshot end-to-end on a branching topology](trajectory/t_traj_slingshot.ipynb)
 - [**Backend zoo** › Palantir · diffusion-map · scTour · StaVIA · Monocle 2 · VIA · CytoTrace 2 · SCORPIUS · TSCAN · destiny · URD · Monocle 3 · CytoTRACE](trajectory/zoo/index.md)
 - [Timing-associated genes analysis with TimeFateKernel](t_cellfate_gene.ipynb)
 - [Identify the driver regulators of cell fate decisions](t_cellfate.ipynb)

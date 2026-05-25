@@ -11,7 +11,7 @@ This section has three layers:
 
 | Layer | Tutorial | When |
 |---|---|---|
-| **1. Recommended workflow** | [t_traj_recommended](t_traj_recommended.ipynb) | Day-one user. Slingshot end-to-end on a real branching dataset, with PAGA overlay, branch-aware dynamic heatmaps and lineage-resolved trend plots. |
+| **1. Recommended workflow** | [t_traj_slingshot](t_traj_slingshot.ipynb) | Day-one user. Slingshot end-to-end on a real branching dataset, with PAGA overlay, branch-aware dynamic heatmaps and lineage-resolved trend plots. |
 | **2. Method zoo** | [zoo/index](zoo/index.md) | You want to compare backends side-by-side, or you need a method that handles a specific topology (linear / multifurcating / cycle / convergence). 15 tutorials, one per backend. |
 
 ## Recommendation tree

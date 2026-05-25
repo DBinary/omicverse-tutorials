@@ -32,4 +32,4 @@ R upstream (`dynverse/dyneval`), with metric drift `|Δ| < 0.07` across the
 13-method × 14-dataset benchmark.
 
 For Slingshot (the recommended outer-level backend), see
-[../t_traj_recommended](../t_traj_recommended.ipynb).
+[../t_traj_slingshot](../t_traj_slingshot.ipynb).
