@@ -33,3 +33,24 @@ R upstream (`dynverse/dyneval`), with metric drift `|Δ| < 0.07` across the
 
 For Slingshot (the recommended outer-level backend), see
 [../t_traj_slingshot](../t_traj_slingshot.ipynb).
+
+```{toctree}
+:maxdepth: 1
+:hidden:
+
+t_traj_palantir
+t_traj_diffusion
+t_traj_sctour
+t_traj_stavia
+t_traj_stavia_toy_multifurcating
+t_traj_monocle2
+t_via
+t_via_velo
+t_cytotrace2
+t_traj_scorpius
+t_traj_tscan
+t_traj_destiny
+t_traj_urd
+t_traj_monocle3
+t_traj_cytotrace_bio
+```
