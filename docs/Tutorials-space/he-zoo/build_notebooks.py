@@ -272,6 +272,22 @@ def hest_fm_cells() -> list[nbf.NotebookNode]:
             - `head='ridge'` — set to `'mlp'` for a 2-layer GELU MLP
               fitted with AdamW; usually a small gain on dense panels,
               not worth the extra compute on a 5-gene panel.
+
+            ### Pre-staging the patch-encoder weights
+
+            HEST-FM downloads the chosen FM from the LazySlide registry
+            on first use. To run **air-gapped** (or to use a checkpoint
+            you've validated elsewhere) pass an explicit path:
+
+            ```python
+            pred = ov.space.histo.predict_expression(
+                wsi, method='hest_fm', reference=adata,
+                fm_backbone='ctranspath',
+                fm_weight_path='/path/to/ctranspath.pth',  # skips HF download
+                hf_token=None,                              # not needed when path is given
+                cache_dir='/path/to/scratch/omicverse_histo',
+            )
+            ```
         """),
         _code("""
             genes = ['EPCAM', 'ERBB2', 'CD68', 'ACTA2', 'VIM']
@@ -321,6 +337,23 @@ def hest_fm_cells() -> list[nbf.NotebookNode]:
             sc.pl.embedding(pred, basis='spatial',
                             color=['EPCAM', 'ERBB2', 'CD68', 'ACTA2'],
                             cmap='magma', s=12, ncols=2, frameon=False)
+        """),
+        _md(
+            "### Real Visium counts for the same genes\n\n"
+            "Render the same four genes from the paired Visium reference "
+            "so they can be eyeballed against the predictions above. "
+            "Both rows use scanpy's spatial scatter; the reference uses "
+            "`adata.X` after log1p normalisation to match the prediction "
+            "scale."
+        ),
+        _code("""
+            import scanpy as sc
+            ref = adata.copy()
+            sc.pp.normalize_total(ref, target_sum=1e4)
+            sc.pp.log1p(ref)
+            sc.pl.embedding(ref, basis='spatial',
+                            color=['EPCAM', 'ERBB2', 'CD68', 'ACTA2'],
+                            cmap='magma', s=24, ncols=2, frameon=False)
         """),
         _md("""
             ## Sanity-check against the reference spots
@@ -555,6 +588,30 @@ def stpath_cells() -> list[nbf.NotebookNode]:
               features under a non-default key.
             - `cache_dir` — override the default
               `$OV_HISTO_CACHE` (where the STPath repo + weights cache).
+            - `weight_path` — explicit local path to `stfm.pth` (STPath
+              checkpoint). When given, the HuggingFace download of
+              `tlhuang/STPath` is skipped.
+            - `fm_weight_path` — explicit local path to the GigaPath
+              `pytorch_model.bin`. When given, the HuggingFace download
+              of `prov-gigapath/prov-gigapath` is skipped (useful when
+              the host doesn't have network access to HuggingFace or
+              when GigaPath has been pre-staged elsewhere).
+            - `hf_token` — explicit HuggingFace token (otherwise reads
+              `$HUGGING_FACE_HUB_TOKEN` then
+              `~/.cache/huggingface/token`).
+
+            ### Air-gapped run (skip both HuggingFace downloads)
+
+            ```python
+            pred = ov.space.histo.predict_expression(
+                wsi, method='stpath',
+                organ='Breast', tech='Visium',
+                genes=['EPCAM', 'ERBB2'],
+                fm_weight_path='/scratch/weights/gigapath/pytorch_model.bin',
+                weight_path='/scratch/weights/stpath/stfm.pth',
+                cache_dir='/scratch/omicverse_histo',
+            )
+            ```
         """),
         _code("""
             pred = ov.space.histo.predict_expression(
@@ -591,6 +648,22 @@ def stpath_cells() -> list[nbf.NotebookNode]:
             sc.pl.embedding(pred, basis='spatial',
                             color=['EPCAM', 'ERBB2', 'CD68', 'ACTA2'],
                             cmap='magma', s=12, ncols=2, frameon=False)
+        """),
+        _md(
+            "### Real Visium counts for the same genes\n\n"
+            "STPath was *not* trained on this slide — it predicts "
+            "zero-shot from the H&E. Plotting the real Visium "
+            "expression for the same genes gives a qualitative read on "
+            "how close the zero-shot output is to ground truth."
+        ),
+        _code("""
+            import scanpy as sc
+            ref = adata.copy()
+            sc.pp.normalize_total(ref, target_sum=1e4)
+            sc.pp.log1p(ref)
+            sc.pl.embedding(ref, basis='spatial',
+                            color=['EPCAM', 'ERBB2', 'CD68', 'ACTA2'],
+                            cmap='magma', s=24, ncols=2, frameon=False)
         """),
         _md("""
             ## Where to go next
@@ -783,6 +856,22 @@ def stflow_cells() -> list[nbf.NotebookNode]:
             top-50 HVGs from the reference, or pass an explicit
             50-gene list.
 
+            ### Pre-staging the patch-encoder weights
+
+            STFlow has no released checkpoint of its own (it trains
+            per-slide); the only thing downloaded is the patch encoder
+            you choose via `fm_backbone`. To run **air-gapped** or with
+            a vetted local checkpoint:
+
+            ```python
+            pred = ov.space.histo.predict_expression(
+                wsi, method='stflow', reference=adata,
+                fm_backbone='ctranspath',
+                fm_weight_path='/scratch/weights/ctranspath.pth',
+                cache_dir='/scratch/omicverse_histo',
+            )
+            ```
+
             **Compute** — at the default settings the cell below takes
             roughly 5–10 min on an H100; most of the time is the
             ctranspath embed of the reference spot grid (cached for
@@ -827,6 +916,21 @@ def stflow_cells() -> list[nbf.NotebookNode]:
             sc.pl.embedding(pred, basis='spatial',
                             color=list(pred.var_names[:4]),
                             cmap='magma', s=12, ncols=2, frameon=False)
+        """),
+        _md(
+            "### Real Visium counts for the same genes\n\n"
+            "Plot the same four predicted genes from the paired Visium "
+            "reference. The reference is log1p-normalised so the colour "
+            "scale lines up with the STFlow output."
+        ),
+        _code("""
+            import scanpy as sc
+            ref = adata.copy()
+            sc.pp.normalize_total(ref, target_sum=1e4)
+            sc.pp.log1p(ref)
+            sc.pl.embedding(ref, basis='spatial',
+                            color=list(pred.var_names[:4]),
+                            cmap='magma', s=24, ncols=2, frameon=False)
         """),
         _md("""
             ## Where to go next
@@ -875,6 +979,16 @@ def istar_cells() -> list[nbf.NotebookNode]:
             Re-training on every slide means iStar adapts to staining /
             tissue idiosyncrasies that out-of-the-box zero-shot models
             cannot.
+
+            > **iStar is NOT a zero-shot model.** It cannot predict
+            > gene expression from H&E alone — the per-slide regression
+            > head trains on the paired Visium counts you pass as
+            > `adata`. Super-resolution then extrapolates that fit to
+            > sub-spot pixels on the *same* slide. If your slide has
+            > **only H&E** (no Visium), use
+            > `ov.space.histo.predict_expression(wsi, method='stpath',
+            > organ=...)` instead — STPath is a true zero-shot
+            > foundation model.
 
             **Licence** — iStar's vendored source lives at
             `omicverse.external.istar` and is GPL-3.0; commercial users
@@ -1058,6 +1172,23 @@ def istar_cells() -> list[nbf.NotebookNode]:
             - `cache_dir=None` — override the default
               `$OV_HISTO_CACHE/istar_runs/<slide_stem>/` working
               directory.
+            - `hipt256_path`, `hipt4k_path` — explicit local paths to the
+              HIPT-256 / HIPT-4K weight files. When given, the
+              mahmoodlab/HIPT LFS download is skipped (useful when the
+              host doesn't have GitHub network access or when the HIPT
+              checkpoints have been pre-staged elsewhere).
+
+            ### Air-gapped run (HIPT checkpoints already staged)
+
+            ```python
+            pred = ov.space.histo.super_resolve(
+                adata, wsi=wsi, method='istar',
+                pixel_size=0.5, n_top_genes=50, epochs=80,
+                hipt256_path='/scratch/weights/HIPT/vit256_small_dino.pth',
+                hipt4k_path='/scratch/weights/HIPT/vit4k_xs_dino.pth',
+                cache_dir='/scratch/omicverse_histo',
+            )
+            ```
         """),
         _code("""
             pred = ov.space.histo.super_resolve(
@@ -1114,6 +1245,22 @@ def istar_cells() -> list[nbf.NotebookNode]:
             sc.pl.embedding(pred, basis='spatial',
                             color=list(pred.var_names[:4]),
                             cmap='magma', s=1, ncols=2, frameon=False)
+        """),
+        _md(
+            "### Real Visium counts for the same genes\n\n"
+            "Render the same four imputed genes from the paired Visium "
+            "reference so the sub-spot imputation can be eyeballed "
+            "against the spot-level ground truth. The reference is "
+            "log1p-normalised to match iStar's output scale."
+        ),
+        _code("""
+            import scanpy as sc
+            ref = adata.copy()
+            sc.pp.normalize_total(ref, target_sum=1e4)
+            sc.pp.log1p(ref)
+            sc.pl.embedding(ref, basis='spatial',
+                            color=list(pred.var_names[:4]),
+                            cmap='magma', s=24, ncols=2, frameon=False)
         """),
         _md("""
             ## Where to go next
