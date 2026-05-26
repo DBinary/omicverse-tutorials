@@ -190,7 +190,10 @@ def hest_fm_cells() -> list[nbf.NotebookNode]:
         ),
         _code("""
             adata, wsi = ov.space.histo.load_breast()
-            adata, wsi
+            adata
+        """),
+        _code("""
+            wsi
         """),
         _md("""
             ### Loading your own data
@@ -385,6 +388,87 @@ def hest_fm_cells() -> list[nbf.NotebookNode]:
             corr_df.sort_values('pearson_r', ascending=False).reset_index(drop=True)
         """),
         _md("""
+            ## Held-out evaluation on a fresh slide (Section 2)
+
+            The Pearson table above mixes "training data" (the H&E
+            patches the ridge head saw) with the comparison spots, so
+            it overestimates real-world quality. To get an honest
+            number, predict on **Section 2** — the adjacent physical
+            section of the same patient block, available from 10x as a
+            second Visium dataset. Same anatomy, same staining batch,
+            but every H&E pixel is genuinely new to the model.
+
+            `load_breast(section=2)` downloads it (~1.7 GB on first
+            use, then cached) and returns the same ``(adata, wsi)``
+            shape as Section 1.
+        """),
+        _code("""
+            adata_s2, wsi_s2 = ov.space.histo.load_breast(section=2)
+            ov.space.histo.tile(wsi_s2, tile_px=224, mpp=0.5)
+            ov.space.histo.embed(wsi_s2, model='ctranspath',
+                                 batch_size=16, num_workers=0)
+            adata_s2, wsi_s2
+        """),
+        _md(
+            "Predict on Section 2's tiles using the same call shape — "
+            "only ``wsi=`` and the reference change."
+        ),
+        _code("""
+            pred_s2 = ov.space.histo.predict_expression(
+                wsi_s2,                       # query: Section 2 H&E tiles
+                method='hest_fm',
+                reference=adata,              # train: Section 1 Visium spots
+                genes=genes,                  # same 5-gene panel
+                fm_backbone='ctranspath',
+                n_components=128, alpha=1.0,
+            )
+            pred_s2
+        """),
+        _md(
+            "### Per-gene scatter on Section 2 (truly held-out)\n\n"
+            "Match each Section 2 Visium spot to its nearest Section 2 "
+            "predicted tile, scatter the real log1p expression against "
+            "the prediction. Pearson r in the title."
+        ),
+        _code("""
+            import numpy as np, matplotlib.pyplot as plt
+            from scipy.spatial import cKDTree
+            from scipy.stats import pearsonr
+
+            spot_xy = adata_s2.obsm['spatial']
+            tile_xy = pred_s2.obsm['spatial']
+            nn = cKDTree(tile_xy).query(spot_xy, k=1)[1]
+
+            ref_X = adata_s2[:, pred_s2.var_names].X
+            ref_X = np.log1p(ref_X.toarray() if hasattr(ref_X, 'toarray') else ref_X)
+            pred_X = pred_s2.X[nn]
+
+            fig, axes = plt.subplots(1, len(pred_s2.var_names),
+                                     figsize=(3 * len(pred_s2.var_names), 3))
+            for ax, g, i in zip(axes, pred_s2.var_names, range(len(pred_s2.var_names))):
+                ax.scatter(ref_X[:, i], pred_X[:, i], s=4, alpha=0.4)
+                r, _ = pearsonr(ref_X[:, i], pred_X[:, i])
+                lo = float(min(ref_X[:, i].min(), pred_X[:, i].min()))
+                hi = float(max(ref_X[:, i].max(), pred_X[:, i].max()))
+                ax.plot([lo, hi], [lo, hi], 'k--', lw=0.8, alpha=0.5)
+                ax.set_title(f'{g}: r={r:.2f}')
+                ax.set_xlabel('Section 2 real log1p')
+                ax.set_ylabel('HEST-FM prediction')
+            plt.tight_layout()
+        """),
+        _md(
+            "**Reading the numbers** — per-gene Pearson r ≈ 0.3–0.7 is "
+            "typical for the *all-public* CTransPath backbone on a "
+            "5-gene panel. Two things noticeably move it up:\n\n"
+            "- swap `fm_backbone='uni2'` / `'virchow2'` / "
+            "`'gigapath'` (gated, see [model card](https://huggingface.co/MahmoodLab/UNI2-h)) "
+            "— typically +5-15% mean r;\n"
+            "- bump the panel size (HEST-Bench fits 50 HVG ridges per "
+            "slide, which stabilises the alpha pick).\n\n"
+            "The dashed diagonal is `predicted = true`; the more the "
+            "cloud hugs it, the better."
+        ),
+        _md("""
             ## Where to go next
 
             The predicted AnnData is interchangeable with a real Visium
@@ -529,6 +613,16 @@ def stpath_cells() -> list[nbf.NotebookNode]:
         _md("## Load the demo dataset"),
         _code("""
             adata, wsi = ov.space.histo.load_breast()
+            adata
+        """),
+        _code("""
+            wsi
+        """),
+        _md(
+            "Tile the WSI on a 224 px @ 0.5 µm/pixel grid (LazySlide's "
+            "`find_tissues` + `tile_tissues` under the hood)."
+        ),
+        _code("""
             ov.space.histo.tile(wsi, tile_px=224, mpp=0.5)
             print('tiles:', len(wsi.shapes['tiles']))
         """),
@@ -664,6 +758,65 @@ def stpath_cells() -> list[nbf.NotebookNode]:
             sc.pl.embedding(ref, basis='spatial',
                             color=['EPCAM', 'ERBB2', 'CD68', 'ACTA2'],
                             cmap='magma', s=24, ncols=2, frameon=False)
+        """),
+        _md("""
+            ## Zero-shot prediction on a never-seen slide (Section 2)
+
+            STPath was trained on 1,170 paired slides covering 17
+            organs — but **this** slide (and every other Section 1
+            we use in HE-zoo) was not in that training set. To
+            additionally check generalisation to a brand-new H&E,
+            predict on the adjacent **Section 2** of the same patient
+            block (separate Visium dataset from 10x).
+
+            `load_breast(section=2)` downloads it on first use
+            (~1.7 GB cached) and returns the same `(adata, wsi)`
+            shape.
+        """),
+        _code("""
+            adata_s2, wsi_s2 = ov.space.histo.load_breast(section=2)
+            ov.space.histo.tile(wsi_s2, tile_px=224, mpp=0.5)
+            ov.space.histo.embed(wsi_s2, model='gigapath',
+                                 batch_size=16, num_workers=0)
+            pred_s2 = ov.space.histo.predict_expression(
+                wsi_s2,
+                method='stpath',
+                organ='Breast', tech='Visium',
+                genes=['EPCAM', 'ERBB2', 'CD68', 'ACTA2', 'VIM'],
+            )
+            pred_s2
+        """),
+        _md(
+            "### Per-gene scatter on Section 2 (truly zero-shot)\n\n"
+            "Match each Section 2 Visium spot to its nearest Section 2 "
+            "predicted tile and scatter real log1p expression against "
+            "the prediction. Pearson r in the title."
+        ),
+        _code("""
+            import numpy as np, matplotlib.pyplot as plt
+            from scipy.spatial import cKDTree
+            from scipy.stats import pearsonr
+
+            spot_xy = adata_s2.obsm['spatial']
+            tile_xy = pred_s2.obsm['spatial']
+            nn = cKDTree(tile_xy).query(spot_xy, k=1)[1]
+
+            ref_X = adata_s2[:, pred_s2.var_names].X
+            ref_X = np.log1p(ref_X.toarray() if hasattr(ref_X, 'toarray') else ref_X)
+            pred_X = pred_s2.X[nn]
+
+            fig, axes = plt.subplots(1, len(pred_s2.var_names),
+                                     figsize=(3 * len(pred_s2.var_names), 3))
+            for ax, g, i in zip(axes, pred_s2.var_names, range(len(pred_s2.var_names))):
+                ax.scatter(ref_X[:, i], pred_X[:, i], s=4, alpha=0.4)
+                r, _ = pearsonr(ref_X[:, i], pred_X[:, i])
+                lo = float(min(ref_X[:, i].min(), pred_X[:, i].min()))
+                hi = float(max(ref_X[:, i].max(), pred_X[:, i].max()))
+                ax.plot([lo, hi], [lo, hi], 'k--', lw=0.8, alpha=0.5)
+                ax.set_title(f'{g}: r={r:.2f}')
+                ax.set_xlabel('Section 2 real log1p')
+                ax.set_ylabel('STPath prediction')
+            plt.tight_layout()
         """),
         _md("""
             ## Where to go next
@@ -807,6 +960,17 @@ def stflow_cells() -> list[nbf.NotebookNode]:
         ),
         _code("""
             adata, wsi = ov.space.histo.load_breast()
+            adata
+        """),
+        _code("""
+            wsi
+        """),
+        _md(
+            "Tile the WSI and extract per-tile CTransPath features. "
+            "Cached on disk under `$OV_HISTO_CACHE/tile_features/` so "
+            "re-runs return instantly."
+        ),
+        _code("""
             ov.space.histo.tile(wsi, tile_px=224, mpp=0.5)
             ov.space.histo.embed(wsi, model='ctranspath',
                                  batch_size=16, num_workers=0)
@@ -931,6 +1095,73 @@ def stflow_cells() -> list[nbf.NotebookNode]:
             sc.pl.embedding(ref, basis='spatial',
                             color=list(pred.var_names[:4]),
                             cmap='magma', s=24, ncols=2, frameon=False)
+        """),
+        _md("""
+            ## Held-out evaluation on a fresh slide (Section 2)
+
+            The STFlow Denoiser above was trained on Section 1's
+            spots and predicts on Section 1's tiles — its training
+            and query domains overlap, which inflates apparent
+            quality. To get an honest read, predict on **Section 2**:
+            the adjacent physical section of the same patient block
+            (separate Visium dataset from 10x). Same anatomy and
+            staining batch, but every H&E pixel is new to the trained
+            head.
+
+            `load_breast(section=2)` downloads it on first use
+            (~1.7 GB cached). Note: STFlow's per-slide head has to be
+            **re-trained** for the new slide, because the architecture
+            references each slide's local spot graph during training —
+            we just keep using the same `predict_expression(method=
+            'stflow', reference=adata, ...)` call but point `wsi=` at
+            Section 2 and `reference=` at Section 1's spots that we
+            still want to learn from.
+        """),
+        _code("""
+            adata_s2, wsi_s2 = ov.space.histo.load_breast(section=2)
+            ov.space.histo.tile(wsi_s2, tile_px=224, mpp=0.5)
+            ov.space.histo.embed(wsi_s2, model='ctranspath',
+                                 batch_size=16, num_workers=0)
+            pred_s2 = ov.space.histo.predict_expression(
+                wsi_s2,                       # query: Section 2 H&E tiles
+                method='stflow',
+                reference=adata,              # train: Section 1 Visium spots
+                fm_backbone='ctranspath',
+                n_epochs=80, n_layers=4, n_sample_steps=5,
+            )
+            pred_s2
+        """),
+        _md(
+            "### Per-gene scatter on Section 2 (held-out)\n\n"
+            "Match each Section 2 Visium spot to its nearest Section 2 "
+            "predicted tile and scatter the real log1p expression "
+            "against the prediction. Pearson r in the title."
+        ),
+        _code("""
+            import numpy as np, matplotlib.pyplot as plt
+            from scipy.spatial import cKDTree
+            from scipy.stats import pearsonr
+
+            spot_xy = adata_s2.obsm['spatial']
+            tile_xy = pred_s2.obsm['spatial']
+            nn = cKDTree(tile_xy).query(spot_xy, k=1)[1]
+
+            picks = list(pred_s2.var_names[:5])
+            ref_X = adata_s2[:, picks].X
+            ref_X = np.log1p(ref_X.toarray() if hasattr(ref_X, 'toarray') else ref_X)
+            pred_X = pred_s2[:, picks].X[nn]
+
+            fig, axes = plt.subplots(1, len(picks), figsize=(3 * len(picks), 3))
+            for ax, g, i in zip(axes, picks, range(len(picks))):
+                ax.scatter(ref_X[:, i], pred_X[:, i], s=4, alpha=0.4)
+                r, _ = pearsonr(ref_X[:, i], pred_X[:, i])
+                lo = float(min(ref_X[:, i].min(), pred_X[:, i].min()))
+                hi = float(max(ref_X[:, i].max(), pred_X[:, i].max()))
+                ax.plot([lo, hi], [lo, hi], 'k--', lw=0.8, alpha=0.5)
+                ax.set_title(f'{g}: r={r:.2f}')
+                ax.set_xlabel('Section 2 real log1p')
+                ax.set_ylabel('STFlow prediction')
+            plt.tight_layout()
         """),
         _md("""
             ## Where to go next
