@@ -106,7 +106,6 @@ def hest_fm_cells() -> list[nbf.NotebookNode]:
 
             import omicverse as ov
             import lazyslide as zs
-            import scanpy as sc
 
             ov.utils.ov_plot_set()
             print('omicverse', ov.__version__, '| lazyslide', zs.__version__)
@@ -208,7 +207,7 @@ def hest_fm_cells() -> list[nbf.NotebookNode]:
             )
             ```
 
-            The helper calls `scanpy.read_visium` and `wsidata.open_wsi`
+            The helper delegates to scverse-stack readers and `wsidata.open_wsi`
             for you and derives `wsi.properties.mpp` from
             `spot_diameter_fullres` so the downstream backends know the
             physical scale. Predicting on a *different* slide than the
@@ -329,15 +328,15 @@ def hest_fm_cells() -> list[nbf.NotebookNode]:
         _md("## Visualise predictions on the tissue"),
         _md(
             "Tile-pixel centroids are in `obsm['spatial']`, so any "
-            "spatial plotter (scanpy, `ov.pl`, `zs.pl.tiles`) works "
-            "directly. For high tile counts (3k+) the scanpy scatter is "
-            "the fastest path; `zs.pl.tiles(style='heatmap')` is useful "
+            "spatial plotter (`ov.pl.embedding` / `ov.pl.spatial`, "
+            "`zs.pl.tiles`) works directly. For high tile counts (3k+) "
+            "`ov.pl.embedding` is the fastest path; "
+            "`zs.pl.tiles(style='heatmap')` is useful "
             "for publication-quality renders that paint the WSI under "
             "the patches."
         ),
         _code("""
-            import scanpy as sc
-            sc.pl.embedding(pred, basis='spatial',
+            ov.pl.embedding(pred, basis='spatial',
                             color=['EPCAM', 'ERBB2', 'CD68', 'ACTA2'],
                             cmap='magma', s=12, ncols=2, frameon=False)
         """),
@@ -345,36 +344,32 @@ def hest_fm_cells() -> list[nbf.NotebookNode]:
             "### Real Visium counts for the same genes\n\n"
             "Render the same four genes from the paired Visium reference "
             "so they can be eyeballed against the predictions above. "
-            "Both rows use scanpy's spatial scatter; the reference uses "
-            "`adata.X` after log1p normalisation to match the prediction "
-            "scale."
+            "The reference is log1p-normalised (`ov.pp.normalize_total` "
+            "+ `ov.pp.log1p`) so the colour scale matches the predictor's "
+            "output."
         ),
         _code("""
-            import scanpy as sc
             ref = adata.copy()
-            sc.pp.normalize_total(ref, target_sum=1e4)
-            sc.pp.log1p(ref)
-            sc.pl.embedding(ref, basis='spatial',
+            ov.pp.normalize_total(ref, target_sum=1e4)
+            ov.pp.log1p(ref)
+            ov.pl.embedding(ref, basis='spatial',
                             color=['EPCAM', 'ERBB2', 'CD68', 'ACTA2'],
                             cmap='magma', s=24, ncols=2, frameon=False)
         """),
-        _md("""
-            ## Sanity-check against the reference spots
-
-            Predicting on the same H&E the reference came from gives
-            a noisy proxy for accuracy: tile centroids do not coincide
-            with spot centroids, so the comparison is over the joint
-            spatial smoothing of both grids. Still, a well-fit head
-            should give positive per-gene Pearson correlation between
-            log1p reference expression and the predicted expression at
-            the nearest tile.
-        """),
+        _md(
+            "### Per-gene scatter on Section 1 (training fit quality)\n\n"
+            "The ridge head was trained on Section 1's spots, so this "
+            "scatter shows the **best-case fit** — how well the model "
+            "can reproduce its own training data. Tile and spot grids "
+            "don't coincide, so each Visium spot is matched to its "
+            "nearest predicted tile before plotting. Pearson r is "
+            "shown in the title; the dashed line is `predicted = true`."
+        ),
         _code("""
-            import numpy as np, pandas as pd
+            import numpy as np, matplotlib.pyplot as plt
             from scipy.spatial import cKDTree
             from scipy.stats import pearsonr
 
-            # match each Visium spot to the nearest predicted tile
             spot_xy = adata.obsm['spatial']
             tile_xy = pred.obsm['spatial']
             nn = cKDTree(tile_xy).query(spot_xy, k=1)[1]
@@ -382,10 +377,19 @@ def hest_fm_cells() -> list[nbf.NotebookNode]:
             ref_X = adata[:, pred.var_names].X
             ref_X = np.log1p(ref_X.toarray() if hasattr(ref_X, 'toarray') else ref_X)
             pred_X = pred.X[nn]
-            rows = [(g, float(pearsonr(ref_X[:, i], pred_X[:, i])[0]))
-                    for i, g in enumerate(pred.var_names)]
-            corr_df = pd.DataFrame(rows, columns=['gene', 'pearson_r'])
-            corr_df.sort_values('pearson_r', ascending=False).reset_index(drop=True)
+
+            fig, axes = plt.subplots(1, len(pred.var_names),
+                                     figsize=(3 * len(pred.var_names), 3))
+            for ax, g, i in zip(axes, pred.var_names, range(len(pred.var_names))):
+                ax.scatter(ref_X[:, i], pred_X[:, i], s=4, alpha=0.4)
+                r, _ = pearsonr(ref_X[:, i], pred_X[:, i])
+                lo = float(min(ref_X[:, i].min(), pred_X[:, i].min()))
+                hi = float(max(ref_X[:, i].max(), pred_X[:, i].max()))
+                ax.plot([lo, hi], [lo, hi], 'k--', lw=0.8, alpha=0.5)
+                ax.set_title(f'{g}: r={r:.2f}')
+                ax.set_xlabel('Section 1 real log1p')
+                ax.set_ylabel('HEST-FM prediction')
+            plt.tight_layout()
         """),
         _md("""
             ## Held-out evaluation on a fresh slide (Section 2)
@@ -423,6 +427,31 @@ def hest_fm_cells() -> list[nbf.NotebookNode]:
                 n_components=128, alpha=1.0,
             )
             pred_s2
+        """),
+        _md(
+            "### Spatial visualisation on Section 2 — prediction\n\n"
+            "Same `ov.pl.embedding` call as Section 1, just pointed at "
+            "the held-out slide's predicted AnnData."
+        ),
+        _code("""
+            ov.pl.embedding(pred_s2, basis='spatial',
+                            color=['EPCAM', 'ERBB2', 'CD68', 'ACTA2'],
+                            cmap='magma', s=12, ncols=2, frameon=False)
+        """),
+        _md(
+            "### Spatial visualisation on Section 2 — real Visium counts\n\n"
+            "Section 2's real Visium expression for the same panel; "
+            "compare visually with the predicted maps above. "
+            "Log1p-normalised so the colour scale matches the "
+            "predictor's output."
+        ),
+        _code("""
+            ref_s2 = adata_s2.copy()
+            ov.pp.normalize_total(ref_s2, target_sum=1e4)
+            ov.pp.log1p(ref_s2)
+            ov.pl.embedding(ref_s2, basis='spatial',
+                            color=['EPCAM', 'ERBB2', 'CD68', 'ACTA2'],
+                            cmap='magma', s=24, ncols=2, frameon=False)
         """),
         _md(
             "### Per-gene scatter on Section 2 (truly held-out)\n\n"
@@ -738,8 +767,7 @@ def stpath_cells() -> list[nbf.NotebookNode]:
         """),
         _md("## Visualise predictions on the tissue"),
         _code("""
-            import scanpy as sc
-            sc.pl.embedding(pred, basis='spatial',
+            ov.pl.embedding(pred, basis='spatial',
                             color=['EPCAM', 'ERBB2', 'CD68', 'ACTA2'],
                             cmap='magma', s=12, ncols=2, frameon=False)
         """),
@@ -751,13 +779,46 @@ def stpath_cells() -> list[nbf.NotebookNode]:
             "how close the zero-shot output is to ground truth."
         ),
         _code("""
-            import scanpy as sc
             ref = adata.copy()
-            sc.pp.normalize_total(ref, target_sum=1e4)
-            sc.pp.log1p(ref)
-            sc.pl.embedding(ref, basis='spatial',
+            ov.pp.normalize_total(ref, target_sum=1e4)
+            ov.pp.log1p(ref)
+            ov.pl.embedding(ref, basis='spatial',
                             color=['EPCAM', 'ERBB2', 'CD68', 'ACTA2'],
                             cmap='magma', s=24, ncols=2, frameon=False)
+        """),
+        _md(
+            "### Per-gene scatter on Section 1 (zero-shot quality)\n\n"
+            "STPath has never seen this slide during training, so this "
+            "scatter already shows held-out generalisation quality. "
+            "Match each Visium spot to its nearest predicted tile, "
+            "scatter real log1p expression against the prediction, "
+            "Pearson r in the title."
+        ),
+        _code("""
+            import numpy as np, matplotlib.pyplot as plt
+            from scipy.spatial import cKDTree
+            from scipy.stats import pearsonr
+
+            spot_xy = adata.obsm['spatial']
+            tile_xy = pred.obsm['spatial']
+            nn = cKDTree(tile_xy).query(spot_xy, k=1)[1]
+
+            ref_X = adata[:, pred.var_names].X
+            ref_X = np.log1p(ref_X.toarray() if hasattr(ref_X, 'toarray') else ref_X)
+            pred_X = pred.X[nn]
+
+            fig, axes = plt.subplots(1, len(pred.var_names),
+                                     figsize=(3 * len(pred.var_names), 3))
+            for ax, g, i in zip(axes, pred.var_names, range(len(pred.var_names))):
+                ax.scatter(ref_X[:, i], pred_X[:, i], s=4, alpha=0.4)
+                r, _ = pearsonr(ref_X[:, i], pred_X[:, i])
+                lo = float(min(ref_X[:, i].min(), pred_X[:, i].min()))
+                hi = float(max(ref_X[:, i].max(), pred_X[:, i].max()))
+                ax.plot([lo, hi], [lo, hi], 'k--', lw=0.8, alpha=0.5)
+                ax.set_title(f'{g}: r={r:.2f}')
+                ax.set_xlabel('Section 1 real log1p')
+                ax.set_ylabel('STPath prediction')
+            plt.tight_layout()
         """),
         _md("""
             ## Zero-shot prediction on a never-seen slide (Section 2)
@@ -785,6 +846,29 @@ def stpath_cells() -> list[nbf.NotebookNode]:
                 genes=['EPCAM', 'ERBB2', 'CD68', 'ACTA2', 'VIM'],
             )
             pred_s2
+        """),
+        _md(
+            "### Spatial visualisation on Section 2 — prediction\n\n"
+            "Same plotter as Section 1, just pointed at the held-out "
+            "slide's predicted AnnData."
+        ),
+        _code("""
+            ov.pl.embedding(pred_s2, basis='spatial',
+                            color=['EPCAM', 'ERBB2', 'CD68', 'ACTA2'],
+                            cmap='magma', s=12, ncols=2, frameon=False)
+        """),
+        _md(
+            "### Spatial visualisation on Section 2 — real Visium counts\n\n"
+            "Section 2's real Visium expression for the same panel, "
+            "log1p-normalised to match the predictor's output scale."
+        ),
+        _code("""
+            ref_s2 = adata_s2.copy()
+            ov.pp.normalize_total(ref_s2, target_sum=1e4)
+            ov.pp.log1p(ref_s2)
+            ov.pl.embedding(ref_s2, basis='spatial',
+                            color=['EPCAM', 'ERBB2', 'CD68', 'ACTA2'],
+                            cmap='magma', s=24, ncols=2, frameon=False)
         """),
         _md(
             "### Per-gene scatter on Section 2 (truly zero-shot)\n\n"
@@ -1076,8 +1160,7 @@ def stflow_cells() -> list[nbf.NotebookNode]:
         """),
         _md("## Visualise"),
         _code("""
-            import scanpy as sc
-            sc.pl.embedding(pred, basis='spatial',
+            ov.pl.embedding(pred, basis='spatial',
                             color=list(pred.var_names[:4]),
                             cmap='magma', s=12, ncols=2, frameon=False)
         """),
@@ -1088,13 +1171,45 @@ def stflow_cells() -> list[nbf.NotebookNode]:
             "scale lines up with the STFlow output."
         ),
         _code("""
-            import scanpy as sc
             ref = adata.copy()
-            sc.pp.normalize_total(ref, target_sum=1e4)
-            sc.pp.log1p(ref)
-            sc.pl.embedding(ref, basis='spatial',
+            ov.pp.normalize_total(ref, target_sum=1e4)
+            ov.pp.log1p(ref)
+            ov.pl.embedding(ref, basis='spatial',
                             color=list(pred.var_names[:4]),
                             cmap='magma', s=24, ncols=2, frameon=False)
+        """),
+        _md(
+            "### Per-gene scatter on Section 1 (training fit quality)\n\n"
+            "The Denoiser was trained on Section 1's spots, so this "
+            "scatter is the best-case fit. Match each Visium spot to "
+            "its nearest predicted tile and scatter the real log1p "
+            "expression against the prediction. Pearson r in the title."
+        ),
+        _code("""
+            import numpy as np, matplotlib.pyplot as plt
+            from scipy.spatial import cKDTree
+            from scipy.stats import pearsonr
+
+            spot_xy = adata.obsm['spatial']
+            tile_xy = pred.obsm['spatial']
+            nn = cKDTree(tile_xy).query(spot_xy, k=1)[1]
+
+            picks = list(pred.var_names[:5])
+            ref_X = adata[:, picks].X
+            ref_X = np.log1p(ref_X.toarray() if hasattr(ref_X, 'toarray') else ref_X)
+            pred_X = pred[:, picks].X[nn]
+
+            fig, axes = plt.subplots(1, len(picks), figsize=(3 * len(picks), 3))
+            for ax, g, i in zip(axes, picks, range(len(picks))):
+                ax.scatter(ref_X[:, i], pred_X[:, i], s=4, alpha=0.4)
+                r, _ = pearsonr(ref_X[:, i], pred_X[:, i])
+                lo = float(min(ref_X[:, i].min(), pred_X[:, i].min()))
+                hi = float(max(ref_X[:, i].max(), pred_X[:, i].max()))
+                ax.plot([lo, hi], [lo, hi], 'k--', lw=0.8, alpha=0.5)
+                ax.set_title(f'{g}: r={r:.2f}')
+                ax.set_xlabel('Section 1 real log1p')
+                ax.set_ylabel('STFlow prediction')
+            plt.tight_layout()
         """),
         _md("""
             ## Held-out evaluation on a fresh slide (Section 2)
@@ -1130,6 +1245,29 @@ def stflow_cells() -> list[nbf.NotebookNode]:
                 n_epochs=80, n_layers=4, n_sample_steps=5,
             )
             pred_s2
+        """),
+        _md(
+            "### Spatial visualisation on Section 2 — prediction\n\n"
+            "Same plotter as Section 1, pointed at the held-out slide's "
+            "predicted AnnData."
+        ),
+        _code("""
+            ov.pl.embedding(pred_s2, basis='spatial',
+                            color=list(pred_s2.var_names[:4]),
+                            cmap='magma', s=12, ncols=2, frameon=False)
+        """),
+        _md(
+            "### Spatial visualisation on Section 2 — real Visium counts\n\n"
+            "Section 2's real Visium expression for the same panel, "
+            "log1p-normalised."
+        ),
+        _code("""
+            ref_s2 = adata_s2.copy()
+            ov.pp.normalize_total(ref_s2, target_sum=1e4)
+            ov.pp.log1p(ref_s2)
+            ov.pl.embedding(ref_s2, basis='spatial',
+                            color=list(pred_s2.var_names[:4]),
+                            cmap='magma', s=24, ncols=2, frameon=False)
         """),
         _md(
             "### Per-gene scatter on Section 2 (held-out)\n\n"
@@ -1341,7 +1479,7 @@ def istar_cells() -> list[nbf.NotebookNode]:
             )
             ```
 
-            Internally this calls `scanpy.read_visium` to get the spot
+            Internally this delegates to scverse readers to get the spot
             counts + spatial metadata, then `wsidata.open_wsi` to wrap
             the H&E. It also auto-derives `wsi.properties.mpp` from
             `spot_diameter_fullres` (Visium spots are 55 µm by design)
@@ -1466,14 +1604,13 @@ def istar_cells() -> list[nbf.NotebookNode]:
         _md("## Visualise sub-spot expression"),
         _md(
             "Because `pred` carries pixel coordinates in `obsm['spatial']`, "
-            "any spatial plotter (`scanpy.pl.embedding`, `ov.pl.spatial`, "
+            "any spatial plotter (`ov.pl.embedding`, `ov.pl.spatial`, "
             "`zs.pl.tiles`) renders it without extra bookkeeping. The "
             "small dot size (`s=1`) is appropriate because the grid is "
             "very dense."
         ),
         _code("""
-            import scanpy as sc
-            sc.pl.embedding(pred, basis='spatial',
+            ov.pl.embedding(pred, basis='spatial',
                             color=list(pred.var_names[:4]),
                             cmap='magma', s=1, ncols=2, frameon=False)
         """),
@@ -1485,11 +1622,10 @@ def istar_cells() -> list[nbf.NotebookNode]:
             "log1p-normalised to match iStar's output scale."
         ),
         _code("""
-            import scanpy as sc
             ref = adata.copy()
-            sc.pp.normalize_total(ref, target_sum=1e4)
-            sc.pp.log1p(ref)
-            sc.pl.embedding(ref, basis='spatial',
+            ov.pp.normalize_total(ref, target_sum=1e4)
+            ov.pp.log1p(ref)
+            ov.pl.embedding(ref, basis='spatial',
                             color=list(pred.var_names[:4]),
                             cmap='magma', s=24, ncols=2, frameon=False)
         """),
