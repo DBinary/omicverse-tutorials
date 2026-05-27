@@ -12,7 +12,8 @@ transcriptome analysis.
 
 ## B-cell receptor
 
-- [BCR somatic hypermutation, selection & lineage trees (Immcantation)](t_airr_03_bcr.ipynb)
+- [BCR somatic hypermutation, selection & lineage trees — bulk (Immcantation)](t_airr_03_bcr.ipynb)
+- [Single-cell BCR + transcriptome — clonal expansion, isotypes & SHM](t_airr_06_bcr_singlecell.ipynb)
 
 ## TCR specificity
 
