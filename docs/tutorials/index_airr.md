@@ -28,6 +28,7 @@ with no extra package.
 ../Tutorials-airr/t_airr_01_singlecell
 ../Tutorials-airr/t_airr_02_bulk
 ../Tutorials-airr/t_airr_03_bcr
+../Tutorials-airr/t_airr_06_bcr_singlecell
 ../Tutorials-airr/t_airr_04_tcr
 ../Tutorials-airr/t_airr_05_tcr_gex
 ```

@@ -115,7 +115,8 @@ This page is the markdown overview for the tutorial structure defined in `mkdocs
 - [AIRR-seq tutorial index](Tutorials-airr/index.md)
 - [Single-cell TCR + transcriptome — the immune-repertoire pipeline](Tutorials-airr/t_airr_01_singlecell.ipynb)
 - [Bulk TCR repertoire analysis (immunarch backend)](Tutorials-airr/t_airr_02_bulk.ipynb)
-- [BCR somatic hypermutation, selection & lineage trees (Immcantation)](Tutorials-airr/t_airr_03_bcr.ipynb)
+- [BCR somatic hypermutation, selection & lineage trees — bulk (Immcantation)](Tutorials-airr/t_airr_03_bcr.ipynb)
+- [Single-cell BCR + transcriptome — clonal expansion, isotypes & SHM](Tutorials-airr/t_airr_06_bcr_singlecell.ipynb)
 - [TCR specificity — TCRdist, GLIPH2, meta-clonotypes, VDJdb annotation](Tutorials-airr/t_airr_04_tcr.ipynb)
 - [Joint TCR + gene-expression analysis (CoNGA-style)](Tutorials-airr/t_airr_05_tcr_gex.ipynb)
 
